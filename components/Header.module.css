@@ -1,0 +1,123 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gem {
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(150deg, var(--gem-hi), var(--gem-lo));
+  clip-path: polygon(50% 0, 100% 32%, 76% 100%, 24% 100%, 0 32%);
+  box-shadow: 0 0 18px var(--glow);
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.nav {
+  display: flex;
+  gap: 26px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.navLink {
+  position: relative;
+  display: flex;
+  color: inherit;
+}
+
+.navLetters {
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+
+.navLetter {
+  display: inline-block;
+  transition: transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1), color 300ms ease;
+}
+
+.navThumbWrap {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  width: 104px;
+  height: 66px;
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+  transform-origin: center;
+  opacity: 0;
+  transform: translate(-50%, 0) scale(0.2) rotate(-11deg);
+  transition: transform 340ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 260ms ease,
+    left 280ms ease-out, top 280ms ease-out;
+}
+
+.navThumbWrap.on {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1) rotate(6deg);
+}
+
+.navThumbWrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.themeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--ink);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 220ms ease;
+}
+
+.themeBtn:hover {
+  border-color: var(--accent);
+}
+
+.themeGem {
+  width: 11px;
+  height: 11px;
+  background: linear-gradient(150deg, var(--gem-hi), var(--gem-lo));
+  clip-path: polygon(50% 0, 100% 38%, 50% 100%, 0 38%);
+}

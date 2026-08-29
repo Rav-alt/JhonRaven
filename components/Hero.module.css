@@ -1,0 +1,385 @@
+.section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 48px;
+  align-items: center;
+  min-height: 84vh;
+  padding: 24px 0 96px;
+}
+
+.figureWrap {
+  position: absolute;
+  left: calc(-1 * clamp(24px, 5vw, 64px) + 1vw);
+  top: -6%;
+  width: min(44%, 520px);
+  height: 114%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--fig-op);
+  animation: noct-drift 11s ease-in-out infinite;
+}
+
+.figureGlow {
+  position: absolute;
+  inset: 6%;
+  background: radial-gradient(closest-side, var(--glow), transparent 72%);
+  filter: blur(14px);
+}
+
+.sprite {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 44px var(--glow));
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
+}
+
+.figureScrim {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(ellipse 62% 52% at 70% 52%, var(--scrim-a) 0%, var(--scrim-b) 52%, var(--scrim-c) 94%);
+}
+
+.copy {
+  position: relative;
+  z-index: 1;
+  padding-left: 21%;
+  text-shadow: var(--halo);
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin-bottom: 22px;
+}
+
+.kickerLine {
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(to right, currentColor, transparent);
+}
+
+.name {
+  font-weight: 500;
+  font-size: clamp(38px, 4.2vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0 0 12px;
+  color: var(--ink-strong);
+  text-wrap: balance;
+}
+
+.role {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.roleBar {
+  width: 3px;
+  height: 26px;
+  background: linear-gradient(var(--accent), transparent);
+}
+
+.roleText {
+  font-weight: 400;
+  font-size: clamp(19px, 2vw, 26px);
+  letter-spacing: -0.015em;
+  color: var(--accent-text);
+}
+
+.tagline {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 420px;
+  margin: 0 0 24px;
+  text-wrap: pretty;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.chip {
+  padding: 5px 11px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+}
+
+.ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent-text);
+  background: var(--accent-wash);
+  transition: box-shadow 220ms ease;
+}
+
+.ctaPrimary:hover {
+  box-shadow: 0 0 24px var(--glow);
+}
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: border-color 220ms ease;
+}
+
+.ctaSecondary:hover {
+  border-color: var(--accent);
+}
+
+.side {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+}
+
+.avatarWrap {
+  position: relative;
+  flex: none;
+  width: 104px;
+  height: 104px;
+}
+
+.avatarRing {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--accent), var(--line), var(--accent));
+  opacity: 0.45;
+}
+
+.avatar {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar img {
+  object-fit: cover;
+}
+
+.profileBody {
+  min-width: 0;
+}
+
+.profileName {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ink-strong);
+  letter-spacing: -0.01em;
+}
+
+.profileHandle {
+  font-size: 14px;
+  color: var(--faint);
+  margin-top: 2px;
+}
+
+.profileBio {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.profileStats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.profileStats strong {
+  color: var(--ink-strong);
+  font-weight: 500;
+}
+
+.followBtn {
+  margin-left: auto;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-text);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.followBtn:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.graphCard {
+  padding: 18px 20px 14px;
+}
+
+.graphHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.graphCount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.graphCountNum {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-strong);
+  letter-spacing: -0.01em;
+}
+
+.graphCountLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.graphSpan {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.graphBody {
+  display: flex;
+  gap: 10px;
+}
+
+.graphDays {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 16px;
+  font-size: 9px;
+  color: var(--faint);
+  line-height: 10px;
+}
+
+.graphDays span {
+  height: 10px;
+}
+
+.graphMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.graphMonths {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 6px;
+  font-size: 9px;
+  color: var(--faint);
+  height: 10px;
+}
+
+.graphMonths span {
+  flex: 1;
+  min-width: 0;
+}
+
+.graphWeeks {
+  display: flex;
+  gap: 3px;
+}
+
+.graphWeek {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.graphCell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+}
+
+.graphLegend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--faint);
+}
+
+.graphLegend span:first-child {
+  margin-right: 3px;
+}
+
+.graphLegend span:last-child {
+  margin-left: 3px;
+}
+
+.legendCell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}

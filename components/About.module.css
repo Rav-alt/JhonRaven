@@ -1,0 +1,150 @@
+.section {
+  padding-bottom: 112px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.kicker {
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin: 0;
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--line-soft), transparent);
+}
+
+.tail {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--tile);
+}
+
+.factMark {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: var(--line-soft);
+}
+
+.factMark.accent {
+  background: var(--accent);
+}
+
+.factBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.factLabel {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.factValue {
+  font-size: 14px;
+  color: var(--ink-strong);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  position: relative;
+  padding: 26px 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+  transition: border-color 220ms ease;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.cardRaised {
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+.cardFlat {
+  background: var(--tile);
+}
+
+.cardKickerRaised {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin-bottom: 16px;
+}
+
+.cardKickerFlat {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 16px;
+}
+
+.cardTextRaised {
+  font-size: 19px;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  color: var(--ink-strong);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.cardTextFlat {
+  font-size: 19px;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: pretty;
+}

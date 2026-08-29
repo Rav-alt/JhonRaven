@@ -1,0 +1,124 @@
+.section {
+  margin-bottom: 112px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.kicker {
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin: 0;
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--line-soft), transparent);
+}
+
+.tail {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 20px 18px;
+  background: var(--tile);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: default;
+  animation: noct-rise 620ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.sweep {
+  position: absolute;
+  inset: 0;
+  background: var(--sweep);
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform: translateY(100%);
+}
+
+.sweep.on {
+  transform: translateY(0);
+}
+
+.ghost {
+  position: absolute;
+  top: -34px;
+  right: -34px;
+  width: 132px;
+  height: 132px;
+  pointer-events: none;
+  background-color: var(--icon-ink);
+  opacity: 0.07;
+  transform: rotate(0deg);
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1), background-color 300ms ease, opacity 300ms ease;
+}
+
+.ghost.on {
+  background-color: #f7fbff;
+  opacity: 0.22;
+  transform: rotate(12deg);
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 14px;
+  background-color: var(--accent);
+  transition: background-color 300ms ease;
+}
+
+.icon.on {
+  background-color: #f7fbff;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-strong);
+  transition: color 300ms ease;
+}
+
+.title.on {
+  color: #f7fbff;
+}
+
+.sub {
+  position: relative;
+  z-index: 1;
+  margin: 5px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color 300ms ease;
+}
+
+.sub.on {
+  color: #cfe0ff;
+}

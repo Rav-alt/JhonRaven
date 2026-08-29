@@ -1,0 +1,241 @@
+.section {
+  padding-bottom: 112px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.kicker {
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kicker);
+  margin: 0;
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--line-soft), transparent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.5fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-left: 18px;
+  border-left: 1px solid var(--line);
+}
+
+.introTitle {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--ink-strong);
+  text-wrap: balance;
+}
+
+.introText {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--faint);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.roles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role {
+  position: relative;
+  padding: 26px 30px 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  transition: border-color 220ms ease;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+}
+
+.role:hover {
+  border-color: var(--accent);
+}
+
+.roleCurrent {
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+.roleFlat {
+  background: var(--tile);
+}
+
+.rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+}
+
+.railCurrent {
+  background: var(--accent);
+}
+
+.roleHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.roleTitleCol {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.roleTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mark {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: var(--line-soft);
+}
+
+.markCurrent {
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.roleTitle {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink-strong);
+}
+
+.roleCompanyRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 19px;
+  font-size: 14px;
+  color: var(--accent-text);
+}
+
+.roleKind {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.roleMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.currentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-wash);
+}
+
+.currentDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: noct-pulse 2.4s ease-in-out infinite;
+}
+
+.span {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 18px;
+  padding-left: 19px;
+}
+
+.bullet {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.bulletMark {
+  flex: none;
+  margin-top: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--line-soft);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.bulletText {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.stack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding: 16px 0 0 19px;
+  border-top: 1px solid var(--line);
+}
+
+.chip {
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+}

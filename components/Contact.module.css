@@ -1,0 +1,221 @@
+.section {
+  padding-bottom: 88px;
+}
+
+.topRule {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line-soft) 14%, var(--line-soft) 86%, transparent);
+  margin-bottom: 64px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: 56px;
+  align-items: end;
+}
+
+.portraitCol {
+  position: relative;
+  align-self: stretch;
+  min-height: 420px;
+}
+
+.portraitGlow {
+  position: absolute;
+  left: 8%;
+  bottom: 0;
+  width: 84%;
+  height: 78%;
+  background: radial-gradient(closest-side, var(--glow), transparent 74%);
+  filter: blur(18px);
+}
+
+.portraitFrame {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.portraitFrameLight {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.portraitImgDark {
+  object-fit: contain;
+  mix-blend-mode: lighten;
+  -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
+}
+
+.portraitImgLight {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding-bottom: 8px;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.kickerLine {
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(to right, currentColor, transparent);
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.headlineText {
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: var(--ink-strong);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.email {
+  font-weight: 300;
+  font-size: clamp(26px, 3.4vw, 40px);
+  letter-spacing: -0.03em;
+  color: var(--accent-text);
+  width: fit-content;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 6px;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+
+.email:hover {
+  border-color: var(--accent);
+  color: var(--accent-hi);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.availableChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-wash);
+}
+
+.availableDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: noct-pulse 2.4s ease-in-out infinite;
+}
+
+.chip {
+  padding: 5px 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+}
+
+.socials {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 6px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--tile);
+  color: inherit;
+  transition: background-color 220ms ease;
+}
+
+.socialMark {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: var(--line-soft);
+  transition: background-color 240ms ease, box-shadow 240ms ease;
+}
+
+.socialMark.on {
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.socialLabel {
+  font-size: 15px;
+  color: var(--ink-strong);
+}
+
+.socialHandle {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.socialArrow {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--accent-text);
+  opacity: 0.35;
+  transform: translateX(-6px);
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 220ms ease;
+}
+
+.socialArrow.on {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.footer {
+  margin-top: 72px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}

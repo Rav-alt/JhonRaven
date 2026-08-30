@@ -2,38 +2,48 @@
 
 import Image from "next/image";
 import styles from "./Hero.module.css";
-import { MONTHS, SPRITES, contributionGrid } from "@/lib/data";
-import type { Theme } from "@/lib/data";
+import { DEFAULT_POKE } from "@/lib/data";
+import type { PokeSkin, Theme } from "@/lib/data";
+import type { ContributionGraph } from "@/lib/github";
+import { spriteFor } from "@/lib/pokeTheme";
 
 const STACK = ["TypeScript", "React", "Next.js", "Tailwind", "Motion"];
 const LEGEND = [0, 1, 2, 3, 4];
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function Hero({
   name,
   handle,
   tagline,
   theme,
+  poke,
+  graph,
 }: {
   name: string;
   handle: string;
   tagline: string;
   theme: Theme;
+  poke: PokeSkin | null;
+  graph: ContributionGraph;
 }) {
-  const weeks = contributionGrid();
+  const weeks = graph.weeks;
+  const skin = poke ?? DEFAULT_POKE;
+  const kicker = `${skin.types.map(cap).join(" · ")} · No. ${skin.dex}`;
 
   return (
     <section className={styles.section}>
       <div className={styles.figureWrap}>
         <div className={styles.figureGlow} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={SPRITES[theme]} alt="Dialga artwork" className={styles.sprite} />
+        <img src={spriteFor(skin.dex, theme)} alt={`${skin.display} artwork`} className={styles.sprite} />
         <div className={styles.figureScrim} />
       </div>
 
       <div className={styles.copy}>
         <div className={styles.kicker}>
           <span className={styles.kickerLine} />
-          Temporal · Steel · No. 483
+          {kicker}
         </div>
         <h1 className={styles.name}>{name}</h1>
         <div className={styles.role}>
@@ -87,10 +97,10 @@ export default function Hero({
         <div className={`${styles.card} ${styles.graphCard}`}>
           <div className={styles.graphHeader}>
             <div className={styles.graphCount}>
-              <span className={styles.graphCountNum}>1,204</span>
+              <span className={styles.graphCountNum}>{graph.total.toLocaleString("en-US")}</span>
               <span className={styles.graphCountLabel}>contributions</span>
             </div>
-            <div className={styles.graphSpan}>last 30 weeks</div>
+            <div className={styles.graphSpan}>last {weeks.length} weeks</div>
           </div>
           <div className={styles.graphBody}>
             <div className={styles.graphDays}>
@@ -104,8 +114,8 @@ export default function Hero({
             </div>
             <div className={styles.graphMain}>
               <div className={styles.graphMonths}>
-                {MONTHS.map((m) => (
-                  <span key={m}>{m}</span>
+                {graph.months.map((m, mi) => (
+                  <span key={mi}>{m}</span>
                 ))}
               </div>
               <div className={styles.graphWeeks}>

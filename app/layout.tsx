@@ -7,12 +7,22 @@ export const metadata: Metadata = {
     "Portfolio of Jhon Raven Cadiz, a front end developer based in Manila, Philippines.",
 };
 
+// Runs before first paint: set the light/dark mode, then replay the last
+// picked Pokémon's derived palette (persisted whole, so no maths or fetch
+// here) as inline custom properties on <html>. Keep the storage keys and the
+// cache shape in sync with hooks/useTheme.ts.
 const THEME_INIT = `
 (function () {
   try {
+    var el = document.documentElement;
     var saved = localStorage.getItem("dialga-portfolio-theme");
     var theme = saved === "light" || saved === "dark" ? saved : "dark";
-    document.documentElement.setAttribute("data-theme", theme);
+    el.setAttribute("data-theme", theme);
+    var raw = localStorage.getItem("dialga-portfolio-poke");
+    if (raw) {
+      var vars = (JSON.parse(raw) || {})[theme];
+      if (vars) for (var k in vars) el.style.setProperty(k, vars[k]);
+    }
   } catch (e) {
     document.documentElement.setAttribute("data-theme", "dark");
   }
@@ -21,7 +31,7 @@ const THEME_INIT = `
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>

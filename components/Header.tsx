@@ -1,24 +1,33 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Header.module.css";
-import { NAV } from "@/lib/data";
+import Pokedex from "./Pokedex";
+import { FEATURED, NAV } from "@/lib/data";
 import { letterSpreadOffsets } from "@/lib/letterSpread";
 import { useIndexHover } from "@/hooks/useIndexHover";
-import type { Theme } from "@/lib/data";
+import type { PokeSkin, Theme } from "@/lib/data";
 
 export default function Header({
   name,
   theme,
   toggleTheme,
+  poke,
+  setPoke,
 }: {
   name: string;
   theme: Theme;
   toggleTheme: () => void;
+  poke: PokeSkin | null;
+  setPoke: (skin: PokeSkin) => void;
 }) {
   const { hovered, onEnter, onLeave } = useIndexHover();
   const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [pokedexOpen, setPokedexOpen] = useState(false);
+
+  const activeDex = poke?.dex ?? FEATURED[0].dex;
+  const currentLabel = poke?.display ?? FEATURED[0].display;
 
   const onMove = (i: number) => (e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = thumbRefs.current[i];
@@ -79,11 +88,30 @@ export default function Header({
             );
           })}
         </nav>
+
+        <button
+          type="button"
+          className={styles.themeBtn}
+          onClick={() => setPokedexOpen(true)}
+          title="Open the Pokédex"
+        >
+          <span className={styles.themeGem} />
+          {currentLabel}
+        </button>
+
         <button className={styles.themeBtn} onClick={toggleTheme} title="Switch theme">
           <span className={styles.themeGem} />
           {theme === "dark" ? "Shiny" : "Regular"}
         </button>
       </div>
+
+      <Pokedex
+        open={pokedexOpen}
+        onClose={() => setPokedexOpen(false)}
+        activeDex={activeDex}
+        theme={theme}
+        onSelect={setPoke}
+      />
     </header>
   );
 }

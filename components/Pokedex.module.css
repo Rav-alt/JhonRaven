@@ -1,0 +1,642 @@
+/* Pokédex modal — a handheld-device shell around the Pokémon picker. Every
+   surface pulls from the active theme tokens so the dex recolours with the
+   chosen Pokémon; only the hardware cues (lamp, LEDs, D-pad, screws) hold a
+   fixed colour so it still reads as a Pokédex in any palette. */
+
+.overlay {
+  background: rgba(4, 10, 20, 0.55);
+  backdrop-filter: blur(3px);
+  animation: pdex-fade 160ms ease;
+}
+
+.shell {
+  width: min(940px, 95vw);
+  /* A definite height (not just max-height) is what lets the inner flex
+     columns become real scroll containers, so the modal always fits the
+     viewport instead of spilling past its bottom edge on short screens. */
+  height: min(700px, 92vh);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--card-shadow), 0 0 70px var(--glow);
+  color: var(--ink);
+  animation: pdex-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* --- lid ---------------------------------------------------------------- */
+
+.lid {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  height: 58px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--accent-wash), transparent);
+}
+
+.lamp {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--line-soft);
+  background: radial-gradient(circle at 32% 30%, #eafcff, var(--gem-hi) 32%, var(--gem-lo) 82%);
+  box-shadow: 0 0 0 4px var(--accent-wash), 0 0 22px var(--glow);
+}
+
+.leds {
+  display: flex;
+  gap: 7px;
+}
+
+.leds i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: pdex-blink 2.4s ease-in-out infinite;
+}
+
+.leds i:nth-child(1) {
+  color: #ff5c5c;
+}
+.leds i:nth-child(2) {
+  color: #ffd23f;
+  animation-delay: 0.4s;
+}
+.leds i:nth-child(3) {
+  color: #54dd8a;
+  animation-delay: 0.8s;
+}
+
+.wordmark {
+  margin: 0 0 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.close {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-soft);
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.close:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+/* --- body ------------------------------------------------------------- */
+
+.body {
+  display: flex;
+  gap: 22px;
+  padding: 22px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.screenCol {
+  flex: 0 0 362px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bezel {
+  position: relative;
+  flex: none;
+  align-self: center;
+  width: 100%;
+  max-width: 244px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, var(--line-soft), var(--line));
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.bezel::before,
+.bezel::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--gem-hi), var(--gem-lo));
+}
+
+.bezel::before {
+  left: 10px;
+}
+.bezel::after {
+  right: 10px;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 36%, var(--accent-wash), transparent 68%), var(--tile);
+  box-shadow: inset 0 0 34px var(--glow);
+}
+
+.sprite {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px var(--glow));
+  animation: pdex-pop 260ms ease, pdex-float 6s ease-in-out 260ms infinite;
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.045) 2px 3px
+  );
+}
+
+.screen[data-state="scan"] .scan::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16%;
+  background: linear-gradient(var(--accent), transparent);
+  animation: pdex-scan 900ms linear infinite;
+}
+
+.screenNote {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  color: var(--accent-text);
+}
+
+/* --- browse index --------------------------------------------------------- */
+
+.index {
+  flex: 1 1 0;
+  min-height: 88px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--tile);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  align-content: start;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-soft) transparent;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 6px 9px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--chip-bg);
+  color: var(--muted);
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 116px;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease,
+    transform 150ms ease;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.cardOn {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent-text);
+}
+
+.cardNum {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
+.cardOn .cardNum {
+  color: var(--accent-text);
+}
+
+.cardSprite {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px var(--glow));
+}
+
+.cardName {
+  max-width: 100%;
+  font-size: 10.5px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.indexNote {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 12px 10px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* --- data column ------------------------------------------------------- */
+
+.dataCol {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-soft) transparent;
+}
+
+.search {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--tile);
+  color: var(--ink);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--faint);
+}
+
+.go {
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-wash);
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: box-shadow 200ms ease, opacity 200ms ease;
+}
+
+.go:hover:not(:disabled) {
+  box-shadow: 0 0 18px var(--glow);
+}
+
+.go:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.chips {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.chipOn {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent-wash);
+}
+
+/* --- readout --------------------------------------------------------- */
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent-wash), transparent 55%), var(--tile);
+  transition: opacity 200ms ease;
+}
+
+.readout[data-dim] {
+  opacity: 0.5;
+}
+
+.idline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.dex {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+}
+
+.pname {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-strong);
+}
+
+.genus {
+  margin-top: -6px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.types {
+  display: flex;
+  gap: 8px;
+}
+
+.type {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-strong);
+  border: 1px solid var(--line-soft);
+  background: var(--accent-wash);
+  border-color: color-mix(in srgb, var(--t, var(--accent)) 55%, transparent);
+  background: color-mix(in srgb, var(--t, var(--accent)) 20%, transparent);
+}
+
+.vitals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+
+.vitals > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.k {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.v {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat {
+  display: grid;
+  grid-template-columns: 54px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+}
+
+.statLabel {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.statTrack {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+
+.statFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--ramp-2), var(--ramp-4));
+  transition: width 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.statVal {
+  text-align: right;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.flavor {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.err {
+  margin: 0;
+  font-size: 13px;
+  color: #ff8a8a;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Narrow OR short viewport: stack the two panes and let the whole body scroll,
+   so nothing is ever left below the fold. */
+@media (max-width: 760px), (max-height: 620px) {
+  .body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .screenCol,
+  .dataCol {
+    flex: none;
+    width: 100%;
+    overflow: visible;
+  }
+  .bezel {
+    max-width: 220px;
+  }
+  .index {
+    flex: none;
+    max-height: 46vh;
+  }
+}
+
+@keyframes pdex-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The base dialog centres itself with the `translate` property (Tailwind v4),
+   so this only needs `transform: scale` — the two compose without fighting. */
+@keyframes pdex-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pdex-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pdex-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pdex-scan {
+  from {
+    top: -16%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes pdex-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}

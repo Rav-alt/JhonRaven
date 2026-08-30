@@ -1,9 +1,21 @@
 export type Theme = "dark" | "light";
 
-export const SPRITES: Record<Theme, string> = {
-  dark: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/483.png",
-  light: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/483.png",
+/** A chosen Pokémon skin. `null` elsewhere means "the base Dialga palette". */
+export type PokeSkin = { dex: number; display: string; types: string[] };
+
+/** The built-in default — its palette lives in globals.css, not derived. */
+export const DEFAULT_POKE: PokeSkin = {
+  dex: 483,
+  display: "Dialga",
+  types: ["steel", "dragon"],
 };
+
+/** Quick-pick chips in the Header. Any other Pokémon is resolved via PokeAPI. */
+export const FEATURED: PokeSkin[] = [
+  DEFAULT_POKE,
+  { dex: 484, display: "Palkia", types: ["water", "dragon"] },
+  { dex: 487, display: "Giratina", types: ["ghost", "dragon"] },
+];
 
 const simpleIcon = (slug: string) => `https://cdn.simpleicons.org/${slug}`;
 const phosphorIcon = (name: string) =>
@@ -94,18 +106,18 @@ export const SOCIALS = [
   { label: "Read.cv", handle: "ravcadiz", href: "#contact" },
 ];
 
-export const MONTHS = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-
-/** Deterministic pseudo-random 30-week x 7-day contribution grid, each cell
- * a ramp step 0-4 (0 = empty). Density rises left-to-right, same seed every
- * render so server and client markup match. */
-export function contributionGrid(): number[][] {
+/** Deterministic pseudo-random `weeks` x 7-day contribution grid, each cell a
+ * ramp step 0-4 (0 = empty). Density rises left-to-right, same seed every
+ * render so server and client markup match. Used as the Hero graph fallback
+ * when there is no GitHub token. */
+export function contributionGrid(weeks = 30): number[][] {
   let seed = 483;
   const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
-  return Array.from({ length: 30 }, (_, w) =>
+  const span = Math.max(1, weeks - 1);
+  return Array.from({ length: weeks }, (_, w) =>
     Array.from({ length: 7 }, () => {
       const r = rnd();
-      const p = 0.18 + 0.42 * (w / 29);
+      const p = 0.18 + 0.42 * (w / span);
       return r < p ? Math.min(4, 1 + Math.floor((r / p) * 4)) : 0;
     })
   );

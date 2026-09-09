@@ -49,6 +49,7 @@ export const THEME_VARS = [
   "--scrim-c",
   "--halo",
   "--sweep",
+  "--on-sweep",
   "--ramp-0",
   "--ramp-1",
   "--ramp-2",
@@ -151,6 +152,24 @@ function fit(h: number, s: number, l: number, bg: string, target: number, dir: 1
 }
 
 /**
+ * Darken a colour (drop its lightness) until its relative luminance sits at or
+ * below `cap`. Used to keep the hover "sweep" gradient dark enough that the
+ * light `--on-sweep` ink always clears WCAG AA, whatever the type hue — bright
+ * hues (electric, grass, bug) get pulled down; blues are already under the cap.
+ */
+function capLum(h: number, s: number, l: number, cap: number): string {
+  let hex = hslToHex(h, s, l);
+  for (let i = 0; i < 60 && relLuminance(hex) > cap; i++) {
+    l = clamp(l - 1.5, 3, l);
+    hex = hslToHex(h, s, l);
+  }
+  return hex;
+}
+
+/** Luminance ceiling for the two sweep stops — see `capLum`. */
+const SWEEP_MAX_LUM = 0.14;
+
+/**
  * Build the chromatic half of the token set from a Pokémon's ordered type list.
  * Returns a map of CSS custom properties to set on `<html>`; both modes return
  * the same keys (see `THEME_VARS`). Text-bearing tokens are contrast-fitted to
@@ -171,6 +190,11 @@ export function derivePalette(types: string[], mode: Mode): Record<string, strin
     const kicker = fit(h2, clamp(s2 - 8, 26, 84), 62, bg, 4.5, 1);
     const gemLo = hslToHex(h, s - 5, 53);
     const scrim = hslToHex(h, 42, 8);
+    // Hover "sweep": two stops both pulled under the luminance cap so the light
+    // ink below always clears AA. --on-sweep is a near-white hue tint.
+    const sweepLo = capLum(h, 50, 20, SWEEP_MAX_LUM);
+    const sweepHi = capLum(h2, clamp(s2 - 6, 28, 86), 33, SWEEP_MAX_LUM);
+    const onSweep = hslToHex(h, clamp(s - 45, 0, 18), 95);
     return {
       "--pg": `radial-gradient(1200px 700px at 78% -6%, ${hslToHex(h, 52, 31)} 0%, ${hslToHex(h, 54, 19)} 38%, ${bg} 76%)`,
       "--pg-flat": bg,
@@ -189,7 +213,8 @@ export function derivePalette(types: string[], mode: Mode): Record<string, strin
       "--scrim-b": `${scrim}d9`,
       "--scrim-c": `${scrim}00`,
       "--halo": `0 2px 22px ${scrim}, 0 0 8px ${scrim}cc`,
-      "--sweep": `linear-gradient(120deg, ${hslToHex(h, 50, 20)}, ${hslToHex(h2, clamp(s2 - 6, 28, 86), 33)})`,
+      "--sweep": `linear-gradient(120deg, ${sweepLo}, ${sweepHi})`,
+      "--on-sweep": onSweep,
       "--ramp-0": hslToHex(h, 38, 18),
       "--ramp-1": hslToHex(h, 52, 30),
       "--ramp-2": hslToHex(h, s, 45),
@@ -204,6 +229,12 @@ export function derivePalette(types: string[], mode: Mode): Record<string, strin
   const kicker = fit(h2, s2, 38, bg, 4.5, -1);
   const gemHi = hslToHex(h, s - 10, 70);
   const scrim = hslToHex(h, 40, 98);
+  // Hover "sweep": a dark colored reveal (same treatment as dark mode) so the
+  // light ink stays legible on any type. Both stops pulled under the cap.
+  const accentHsl = hexToHsl(accent);
+  const sweepLo = capLum(h, s, 34, SWEEP_MAX_LUM);
+  const sweepHi = capLum(accentHsl.h, accentHsl.s, accentHsl.l, SWEEP_MAX_LUM);
+  const onSweep = hslToHex(h, clamp(s - 45, 0, 18), 95);
   return {
     "--pg": `radial-gradient(1200px 700px at 78% -6%, ${hslToHex(h, 52, 90)} 0%, ${hslToHex(h, 44, 95)} 40%, ${bg} 78%)`,
     "--pg-flat": bg,
@@ -222,7 +253,8 @@ export function derivePalette(types: string[], mode: Mode): Record<string, strin
     "--scrim-b": `${scrim}b3`,
     "--scrim-c": `${scrim}00`,
     "--halo": `0 1px 14px ${scrim}, 0 0 6px #ffffffcc`,
-    "--sweep": `linear-gradient(120deg, ${hslToHex(h, s, 34)}, ${accent})`,
+    "--sweep": `linear-gradient(120deg, ${sweepLo}, ${sweepHi})`,
+    "--on-sweep": onSweep,
     "--ramp-0": hslToHex(h, 36, 92),
     "--ramp-1": hslToHex(h, 46, 81),
     "--ramp-2": hslToHex(h, s, 64),

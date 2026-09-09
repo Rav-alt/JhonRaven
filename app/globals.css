@@ -1,5 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 @import "tailwindcss";
+
+/* Fonts load via next/font in app/layout.tsx, which puts --font-display
+   (Space Grotesk) and --font-body (Inter) on <html> — each value already
+   carries next/font's own fallback face. We add system-ui as a final guard
+   where the variables are consumed (body + headings below). */
 
 /* Dialga theme tokens — dark ("Shiny") is the default; light ("Regular")
    overrides every token so the whole page recolors when data-theme flips. */
@@ -38,6 +42,7 @@
   --ramp-3: #59a6ee;
   --ramp-4: #a8d6ff;
   --sweep: linear-gradient(120deg, #16304f, #24537f);
+  --on-sweep: #f2f8ff;
   --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/483.png");
 }
 
@@ -75,6 +80,7 @@
   --ramp-3: #3f8ad4;
   --ramp-4: #1d5896;
   --sweep: linear-gradient(120deg, #1d5896, #2f74b8);
+  --on-sweep: #f2f8ff;
   --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/483.png");
 }
 
@@ -91,7 +97,14 @@ body {
 body {
   background: var(--pg-flat);
   color: var(--ink);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
 }
 
 a {
@@ -105,6 +118,50 @@ a:hover {
 
 button {
   font: inherit;
+}
+
+/* Visible, styled focus for keyboard users on every interactive element.
+   Mouse clicks don't trigger :focus-visible, so this never shows on hover. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Skip link — first focusable element; slides into view when tabbed to. */
+.skipLink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  padding: 10px 16px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-strong);
+  background: var(--tile);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transform: translateY(-160%);
+  transition: transform 200ms ease;
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+}
+
+/* Motion is an enhancement — respect the OS "reduce motion" setting. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @keyframes noct-drift {

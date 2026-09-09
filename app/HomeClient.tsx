@@ -24,6 +24,9 @@ export default function HomeClient({ graph }: { graph: ContributionGraph }) {
 
   return (
     <div className={styles.root}>
+      <a className="skipLink" href="#main">
+        Skip to content
+      </a>
       <div className={styles.bgGrid} />
       <SideNav sideOn={sideOn} activeSec={activeSec} />
 
@@ -35,12 +38,14 @@ export default function HomeClient({ graph }: { graph: ContributionGraph }) {
           poke={poke}
           setPoke={setPoke}
         />
-        <Hero name={NAME} handle={HANDLE} tagline={TAGLINE} theme={theme} poke={poke} graph={graph} />
-        <About />
-        <TechStack />
-        <Projects />
-        <Experience />
-        <Contact name={NAME} theme={theme} />
+        <main id="main">
+          <Hero name={NAME} handle={HANDLE} tagline={TAGLINE} theme={theme} poke={poke} graph={graph} />
+          <About />
+          <TechStack />
+          <Projects />
+          <Experience />
+          <Contact name={NAME} theme={theme} />
+        </main>
       </div>
     </div>
   );

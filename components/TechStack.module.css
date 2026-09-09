@@ -74,7 +74,7 @@
 }
 
 .ghost.on {
-  background-color: #f7fbff;
+  background-color: var(--on-sweep);
   opacity: 0.22;
   transform: rotate(12deg);
 }
@@ -90,7 +90,7 @@
 }
 
 .icon.on {
-  background-color: #f7fbff;
+  background-color: var(--on-sweep);
 }
 
 .title {
@@ -105,7 +105,7 @@
 }
 
 .title.on {
-  color: #f7fbff;
+  color: var(--on-sweep);
 }
 
 .sub {
@@ -120,5 +120,21 @@
 }
 
 .sub.on {
-  color: #cfe0ff;
+  color: var(--on-sweep);
+}
+
+@media (max-width: 760px) {
+  .section {
+    margin-bottom: 84px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 440px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

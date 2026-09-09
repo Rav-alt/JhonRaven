@@ -120,6 +120,7 @@
 }
 
 .tileName {
+  font-family: var(--font-display);
   font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.015em;
@@ -330,4 +331,20 @@
 .factValue {
   font-size: 14px;
   color: var(--ink-strong);
+}
+
+@media (max-width: 760px) {
+  .section {
+    padding-bottom: 84px;
+  }
+
+  .modalBody {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 22px 28px;
+  }
+
+  .modalShot {
+    height: clamp(160px, 46vw, 260px);
+  }
 }

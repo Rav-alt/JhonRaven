@@ -25,3 +25,10 @@
   margin: 0 auto;
   padding: 0 clamp(24px, 5vw, 64px);
 }
+
+/* Leave room at the bottom for the floating section rail on mobile. */
+@media (max-width: 900px) {
+  .container {
+    padding-bottom: 96px;
+  }
+}

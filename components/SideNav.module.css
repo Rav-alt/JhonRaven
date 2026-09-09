@@ -137,3 +137,32 @@
   height: 100%;
   object-fit: cover;
 }
+
+/* Mobile: the rail becomes a persistent floating bottom tab bar — the
+   scroll-spy gate keeps it hidden here otherwise, so force it visible and
+   drop the pointer-only hover label/thumbnail. */
+@media (max-width: 900px) {
+  .rail {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    flex-direction: row;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 999px;
+    opacity: 1 !important;
+    transform: translateX(-50%) !important;
+    pointer-events: auto !important;
+  }
+
+  .item {
+    width: 46px;
+    height: 46px;
+  }
+
+  .label,
+  .thumbWrap {
+    display: none;
+  }
+}

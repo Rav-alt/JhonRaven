@@ -25,6 +25,7 @@
 }
 
 .name {
+  font-family: var(--font-display);
   font-size: 15px;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -39,6 +40,7 @@
 .nav {
   display: flex;
   gap: 26px;
+  font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -104,6 +106,7 @@
   border-radius: 999px;
   background: var(--chip-bg);
   color: var(--ink);
+  font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -120,4 +123,36 @@
   height: 11px;
   background: linear-gradient(150deg, var(--gem-hi), var(--gem-lo));
   clip-path: polygon(50% 0, 100% 38%, 50% 100%, 0 38%);
+}
+
+/* Mobile: drop the hover-driven text nav (the floating rail becomes the
+   section nav), keep the brand and the two theme/Pokédex controls. */
+@media (max-width: 900px) {
+  .header {
+    gap: 14px;
+    padding: 18px 0;
+    flex-wrap: wrap;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .right {
+    gap: 10px;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .name {
+    font-size: 14px;
+  }
+
+  .themeBtn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
 }

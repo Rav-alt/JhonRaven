@@ -29,10 +29,10 @@ export default function Contact({ name, theme }: { name: string; theme: Theme })
         </div>
 
         <div className={styles.right}>
-          <div className={styles.kicker}>
+          <h2 className={styles.kicker}>
             <span className={styles.kickerLine} />
             Contact
-          </div>
+          </h2>
 
           <div className={styles.headline}>
             <div className={styles.headlineText}>Open to front-end work and collaborations.</div>

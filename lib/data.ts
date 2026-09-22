@@ -100,10 +100,12 @@ export const GRID_FACTS = [
 
 export const GRID_STACK = ["React", "Next.js", "TypeScript", "Git"];
 
+export const RESUME_PATH = "/Resume-Jhon_Raven_Cadiz.pdf";
+
 export const SOCIALS = [
-  { label: "GitHub", handle: "@rav-alt", href: "#contact" },
-  { label: "LinkedIn", handle: "Jhon Raven Cadiz", href: "#contact" },
-  { label: "Read.cv", handle: "ravcadiz", href: "#contact" },
+  { label: "GitHub", handle: "@rav-alt", href: "https://github.com/Rav-alt" },
+  { label: "LinkedIn", handle: "Jhon Raven Cadiz", href: "https://www.linkedin.com/in/jhon-raven-cadiz-63a002352/" },
+  { label: "Resume", handle: "PDF", href: RESUME_PATH },
 ];
 
 /** Deterministic pseudo-random `weeks` x 7-day contribution grid, each cell a

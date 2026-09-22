@@ -42,7 +42,6 @@ export default function Header({
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <div className={styles.gem} />
         <div className={styles.name}>{name}</div>
       </div>
       <div className={styles.right}>

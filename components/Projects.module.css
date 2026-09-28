@@ -91,6 +91,14 @@
   background: var(--accent-wash);
 }
 
+/* Ended project: neutral ink on a solid card fill (not the accent wash) so
+   it stays legible over the screenshot under any palette. */
+.badgeEnded {
+  color: var(--muted);
+  border-color: var(--line-soft);
+  background: var(--card);
+}
+
 .thumbBadge {
   position: absolute;
   left: 14px;

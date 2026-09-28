@@ -14,7 +14,7 @@ export default function Projects() {
       <div className={styles.sectionHead}>
         <h2 className={styles.kicker}>Projects</h2>
         <div className={styles.rule} />
-        <span className={styles.tail}>One, in production</span>
+        <span className={styles.tail}>One, shipped</span>
       </div>
 
       <div className={styles.grid}>
@@ -22,9 +22,8 @@ export default function Projects() {
           <span className={styles.thumb}>
             <Image src="/images/grid-screenshot.png" alt="Grid platform screenshot" fill sizes="280px" />
             <span className={styles.thumbScrim} />
-            <span className={`${styles.badge} ${styles.thumbBadge}`}>
-              <span className={styles.badgeDot} />
-              Current work
+            <span className={`${styles.badge} ${styles.badgeEnded} ${styles.thumbBadge}`}>
+              Ended · Sep 2026
             </span>
           </span>
           <span className={styles.tileBody}>
@@ -64,10 +63,7 @@ export default function Projects() {
           <div className={styles.modalBody}>
             <div className={styles.modalMain}>
               <div className={styles.modalTags}>
-                <span className={styles.badge}>
-                  <span className={styles.badgeDot} />
-                  Current work
-                </span>
+                <span className={`${styles.badge} ${styles.badgeEnded}`}>Ended · Sep 2026</span>
                 <span className={styles.modalRole}>Front end developer</span>
               </div>
               <div className={styles.modalTitleRow}>
@@ -75,10 +71,10 @@ export default function Projects() {
                 <div className={styles.modalCompany}>Grid Property Ventures</div>
               </div>
               <p className={styles.modalDesc}>
-                A real estate property listing platform where I work as a Front End Developer,
-                maintaining and improving the platform while building new features. My work
-                includes developing UI components, fixing bugs, improving existing
-                functionality, and occasionally contributing to backend development.
+                A real estate property listing platform where I worked as a Front End Developer
+                from June to September 2026, maintaining and improving the platform while
+                building new features. My work covered developing UI components, fixing bugs,
+                improving existing functionality, and contributing to backend development.
               </p>
               <div className={styles.modalChips}>
                 {GRID_STACK.map((t) => (

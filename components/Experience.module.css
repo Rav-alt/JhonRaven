@@ -177,6 +177,20 @@
   background: var(--accent-wash);
 }
 
+/* Ended role: same shape as the Current badge, drained to neutrals so the
+   eye reads it as a closed chapter, not a live one. */
+.endedBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+}
+
 .currentDot {
   width: 5px;
   height: 5px;

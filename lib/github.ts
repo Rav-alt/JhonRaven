@@ -12,12 +12,20 @@ import { contributionGrid } from "@/lib/data";
 //
 // Only the most recent WEEKS_SHOWN weeks are kept, and `total` is the sum over
 // that window — so the number and the grid always describe the same period.
+// Each day keeps its date and raw count so the graph can show a GitHub-style
+// "N contributions on <date>" tooltip on hover / keyboard focus.
 
 const WEEKS_SHOWN = 30;
 
+export type ContributionDay = {
+  date: string; // YYYY-MM-DD (GitHub's calendar date, no time zone)
+  count: number; // contributions that day
+  level: number; // ramp step 0-4
+};
+
 export type ContributionGraph = {
   total: number; // contributions across the visible ~30-week window
-  weeks: number[][]; // ramp step 0-4 per day, oldest week first
+  weeks: ContributionDay[][]; // Sun→Sat per week, oldest week first; last week may be partial
   months: string[]; // one label per month spanned by the window
 };
 
@@ -54,22 +62,41 @@ type ApiResponse = {
 
 const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+const DAY_MS = 86_400_000;
+const isoDate = (d: Date) => d.toISOString().slice(0, 10);
+
+/** Placeholder calendar: real dates ending today (Sun→Sat columns like
+ *  GitHub's), seeded levels, and a plausible count per level. */
 function fallback(): ContributionGraph {
-  const weeks = contributionGrid(WEEKS_SHOWN);
-  const total = weeks.reduce((sum, w) => sum + w.reduce((s, level) => s + level, 0), 0);
+  const levels = contributionGrid(WEEKS_SHOWN);
   const now = new Date();
-  const months = [2, 1, 0].map((back) => MONTH_ABBR[(now.getUTCMonth() - back + 12) % 12]);
-  return { total, weeks, months };
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const firstSunday = today - new Date(today).getUTCDay() * DAY_MS - (WEEKS_SHOWN - 1) * 7 * DAY_MS;
+
+  const weeks: ContributionDay[][] = levels.map((week, wi) =>
+    week
+      .map((level, di) => {
+        const t = firstSunday + (wi * 7 + di) * DAY_MS;
+        // Deterministic spread so level 2 isn't always exactly "4".
+        const count = level === 0 ? 0 : level * 3 - ((wi + di) % 3);
+        return { t, day: { date: isoDate(new Date(t)), count, level } };
+      })
+      .filter(({ t }) => t <= today)
+      .map(({ day }) => day),
+  );
+
+  const total = weeks.reduce((sum, w) => sum + w.reduce((s, d) => s + d.count, 0), 0);
+  return { total, weeks, months: monthLabels(weeks) };
 }
 
 /** One label per month change across the visible weeks (keyed off each week's first day). */
-function monthLabels(weeks: ApiWeek[]): string[] {
+function monthLabels(weeks: ContributionDay[][]): string[] {
   const labels: string[] = [];
   let last = -1;
   for (const week of weeks) {
-    const first = week.contributionDays[0];
+    const first = week[0];
     if (!first) continue;
-    const m = new Date(first.date).getUTCMonth();
+    const m = Number(first.date.slice(5, 7)) - 1;
     if (m !== last) {
       labels.push(MONTH_ABBR[m]);
       last = m;
@@ -99,14 +126,16 @@ export async function getContributions(): Promise<ContributionGraph> {
     const allWeeks = json.data?.user?.contributionsCollection?.contributionCalendar?.weeks;
     if (!allWeeks?.length) return fallback();
 
-    const weeks = allWeeks.slice(-WEEKS_SHOWN);
-    const grid = weeks.map((w) => w.contributionDays.map((d) => LEVEL[d.contributionLevel] ?? 0));
-    const total = weeks.reduce(
-      (sum, w) => sum + w.contributionDays.reduce((s, d) => s + d.contributionCount, 0),
-      0,
+    const weeks: ContributionDay[][] = allWeeks.slice(-WEEKS_SHOWN).map((w) =>
+      w.contributionDays.map((d) => ({
+        date: d.date,
+        count: d.contributionCount,
+        level: LEVEL[d.contributionLevel] ?? 0,
+      })),
     );
+    const total = weeks.reduce((sum, w) => sum + w.reduce((s, d) => s + d.count, 0), 0);
 
-    return { total, weeks: grid, months: monthLabels(weeks) };
+    return { total, weeks, months: monthLabels(weeks) };
   } catch {
     return fallback();
   }

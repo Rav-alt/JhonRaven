@@ -44,16 +44,16 @@ export type Role = {
 
 export const ROLES: Role[] = [
   {
-    span: "Jun 2026 — Present",
+    span: "Jun — Sep 2026",
     title: "Web Developer",
     company: "Grid Property Ventures",
     kind: "Startup",
-    current: true,
+    current: false,
     bullets: [
-      "Develop and maintain the web front end for grid.com.ph, from listing pages through to the inquiry flow.",
-      "Work directly with the founders: scope a change in the morning, ship it the same week.",
-      "Keep the interface consistent as the product grows — shared components, one type ramp, one set of tokens.",
-      "Own performance and responsiveness across desktop and mobile, where most of the traffic lands.",
+      "Developed and maintained the web front end for grid.com.ph, from listing pages through to the inquiry flow.",
+      "Worked directly with the founders: scoped a change in the morning, shipped it the same week.",
+      "Kept the interface consistent as the product grew — shared components, one type ramp, one set of tokens.",
+      "Owned performance and responsiveness across desktop and mobile, where most of the traffic lands.",
     ],
     stack: ["Next.js", "React", "shadcn/ui", "MongoDB", "DigitalOcean"],
   },
@@ -93,12 +93,19 @@ export const SIDE: SideItem[] = [
 
 export const GRID_FACTS = [
   { k: "Role", v: "Front End Developer" },
-  { k: "Status", v: "Current work" },
+  { k: "Status", v: "Ended · Sep 2026" },
   { k: "Product", v: "Property listing platform" },
   { k: "Scope", v: "UI components, fixes, features" },
 ];
 
 export const GRID_STACK = ["React", "Next.js", "TypeScript", "Git"];
+
+/** Hero availability banner. Set `open: false` to hide it once hired. */
+export const AVAILABILITY = {
+  open: true,
+  label: "Open to work",
+  detail: "Front-end · Manila or remote",
+};
 
 export const RESUME_PATH = "/Resume-Jhon_Raven_Cadiz.pdf";
 

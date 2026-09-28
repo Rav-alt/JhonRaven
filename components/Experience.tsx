@@ -12,8 +12,8 @@ export default function Experience() {
         <div className={styles.intro}>
           <div className={styles.introTitle}>One company, two seats</div>
           <p className={styles.introText}>
-            I joined Grid Property Ventures as an intern and stayed on to own the front end.
-            Small team, real traffic, short feedback loops.
+            I joined Grid Property Ventures as an intern and stayed on to own the front end
+            until September 2026. Small team, real traffic, short feedback loops.
           </p>
         </div>
 
@@ -36,11 +36,13 @@ export default function Experience() {
                   </div>
                 </div>
                 <div className={styles.roleMeta}>
-                  {r.current && (
+                  {r.current ? (
                     <span className={styles.currentBadge}>
                       <span className={styles.currentDot} />
                       Current
                     </span>
+                  ) : (
+                    <span className={styles.endedBadge}>Ended</span>
                   )}
                   <span className={styles.span}>{r.span}</span>
                 </div>

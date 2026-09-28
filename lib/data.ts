@@ -100,6 +100,93 @@ export const GRID_FACTS = [
 
 export const GRID_STACK = ["React", "Next.js", "TypeScript", "Git"];
 
+/** One silent screen recording. Files live in /public/videos — keep names
+ * lowercase: Windows ignores case, the production server doesn't. */
+/** `src` is the H.264 MP4 every major browser plays; `webm` is a VP9 fallback
+ * for the few that ship without H.264. */
+export type ProjectClip = { label: string; caption: string; src: string; webm: string; poster: string };
+
+export type ProjectMedia =
+  | { kind: "image"; src: string; alt: string }
+  | { kind: "video"; clips: ProjectClip[] };
+
+export type Project = {
+  id: string;
+  name: string;
+  /** Company, or what kind of thing it is for personal work. */
+  owner: string;
+  status: string;
+  /** Ended work gets the neutral badge; live/personal work gets the accent one. */
+  ended: boolean;
+  role: string;
+  /** Text in the modal's window bar: a URL for sites, a file name for apps. */
+  chrome: string;
+  thumb: { src: string; alt: string };
+  media: ProjectMedia;
+  description: string[];
+  stack: string[];
+  facts: { k: string; v: string }[];
+};
+
+export const PROJECTS: Project[] = [
+  {
+    id: "snap",
+    name: "Snap",
+    owner: "Windows desktop utility",
+    status: "Personal tool · 2026",
+    ended: false,
+    role: "Designed & built solo",
+    chrome: "snap.exe",
+    thumb: { src: "/images/snap-screenshot.png", alt: "Snap's main window showing the Work workspace and its four apps" },
+    media: {
+      kind: "video",
+      clips: [
+        {
+          label: "Launch button",
+          caption: "Pick a workspace, press Launch — Chrome, VS Code, Claude and a terminal open together.",
+          src: "/videos/snap-launch-button.mp4",
+          webm: "/videos/snap-launch-button.webm",
+          poster: "/videos/snap-launch-button-poster.jpg",
+        },
+        {
+          label: "Global shortcut",
+          caption: "Window closed to the tray, then Ctrl + Alt + 2 — the same workspace opens with no window in sight.",
+          src: "/videos/snap-launch-shortcut.mp4",
+          webm: "/videos/snap-launch-shortcut.webm",
+          poster: "/videos/snap-launch-shortcut-poster.jpg",
+        },
+      ],
+    },
+    description: [
+      "I built Snap for my own use case: I was tired of opening applications and tabs one by one every time I sat down to work. Snap lets me pick which apps belong together, group them into a workspace, and open that whole workspace with one shortcut.",
+      "It lives in the Windows system tray, so the shortcuts keep working with the window closed. React handles the interface; Rust does the native work — launching processes, registering global shortcuts, pulling real icons out of each .exe and detecting installed apps.",
+    ],
+    stack: ["Tauri 2", "Rust", "React", "TypeScript", "Tailwind CSS"],
+    facts: [
+      { k: "Role", v: "Solo — design & build" },
+      { k: "Platform", v: "Windows, system tray" },
+      { k: "Shortcut", v: "Ctrl + Alt + number" },
+      { k: "Storage", v: "Local JSON, no account" },
+    ],
+  },
+  {
+    id: "grid",
+    name: "Grid",
+    owner: "Grid Property Ventures",
+    status: "Ended · Sep 2026",
+    ended: true,
+    role: "Front end developer",
+    chrome: "grid.com.ph",
+    thumb: { src: "/images/grid-screenshot.png", alt: "Grid platform screenshot" },
+    media: { kind: "image", src: "/images/grid-screenshot.png", alt: "Grid platform screenshot" },
+    description: [
+      "A real estate property listing platform where I worked as a Front End Developer from June to September 2026, maintaining and improving the platform while building new features. My work covered developing UI components, fixing bugs, improving existing functionality, and contributing to backend development.",
+    ],
+    stack: GRID_STACK,
+    facts: GRID_FACTS,
+  },
+];
+
 /** Hero availability banner. Set `open: false` to hide it once hired. */
 export const AVAILABILITY = {
   open: true,

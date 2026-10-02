@@ -21,7 +21,7 @@
 .rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, var(--line-soft), transparent);
+  background: var(--line-soft);
 }
 
 .tail {
@@ -74,7 +74,7 @@
 .thumbScrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, var(--scrim-a) 4%, var(--scrim-c) 62%);
+  display: none;
 }
 
 .badge {
@@ -103,6 +103,8 @@
   position: absolute;
   left: 14px;
   bottom: 12px;
+  /* Solid fill: it sits straight on the screenshot now that the scrim is gone. */
+  background: var(--tile);
 }
 
 .badgeDot {
@@ -152,7 +154,6 @@
 
 .backdrop {
   background: var(--scrim-b);
-  backdrop-filter: blur(6px);
   animation: noct-fade 220ms ease both;
 }
 
@@ -163,7 +164,6 @@
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 40px 90px #030a14b8;
   animation: noct-rise 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%);
 }
@@ -232,7 +232,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to top, var(--scrim-a) 0%, var(--scrim-c) 52%);
+  display: none;
 }
 
 .modalBody {

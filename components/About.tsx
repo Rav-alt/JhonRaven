@@ -1,4 +1,6 @@
 import styles from "./About.module.css";
+import ContributionGraphCard from "./ContributionGraph";
+import type { ContributionGraph } from "@/lib/github";
 
 const FACTS = [
   { label: "Based in", value: "Manila, Philippines", accent: true },
@@ -6,7 +8,7 @@ const FACTS = [
   { label: "Motto", value: "money no me", accent: false },
 ];
 
-export default function About() {
+export default function About({ graph }: { graph: ContributionGraph }) {
   return (
     <section id="about" className={styles.section}>
       <div className={styles.sectionHead}>
@@ -41,6 +43,22 @@ export default function About() {
             </p>
           </div>
         </div>
+
+        {/* Fig. 1 — the caption sits in the facts column, the graph lines up
+            under the cards: a spec-sheet figure, not another card in a row. */}
+        <figure className={styles.figure}>
+          <figcaption className={styles.figCaption}>
+            <span className={styles.figLabel}>Fig. 1</span>
+            <span className={styles.figTitle}>Commit history</span>
+            <span className={styles.figText}>
+              {graph.total.toLocaleString("en-US")} contributions over the last {graph.weeks.length}{" "}
+              weeks. Pulled from GitHub, refreshed hourly.
+            </span>
+          </figcaption>
+          <div className={styles.figBody}>
+            <ContributionGraphCard graph={graph} />
+          </div>
+        </figure>
       </div>
     </section>
   );

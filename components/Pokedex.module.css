@@ -5,7 +5,6 @@
 
 .overlay {
   background: rgba(4, 10, 20, 0.55);
-  backdrop-filter: blur(3px);
   animation: pdex-fade 160ms ease;
 }
 
@@ -21,7 +20,6 @@
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--card);
-  box-shadow: var(--card-shadow), 0 0 70px var(--glow);
   color: var(--ink);
   animation: pdex-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -36,7 +34,6 @@
   height: 58px;
   padding: 0 18px;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--accent-wash), transparent);
 }
 
 .lamp {
@@ -44,8 +41,7 @@
   height: 34px;
   border-radius: 50%;
   border: 3px solid var(--line-soft);
-  background: radial-gradient(circle at 32% 30%, #eafcff, var(--gem-hi) 32%, var(--gem-lo) 82%);
-  box-shadow: 0 0 0 4px var(--accent-wash), 0 0 22px var(--glow);
+  background: var(--gem-lo);
 }
 
 .leds {
@@ -131,8 +127,7 @@
   max-width: 244px;
   padding: 14px;
   border-radius: 16px;
-  background: linear-gradient(160deg, var(--line-soft), var(--line));
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.28);
+  background: var(--line);
 }
 
 .bezel::before,
@@ -143,7 +138,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--gem-hi), var(--gem-lo));
+  background: var(--gem-lo);
 }
 
 .bezel::before {
@@ -162,15 +157,13 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 50% 36%, var(--accent-wash), transparent 68%), var(--tile);
-  box-shadow: inset 0 0 34px var(--glow);
+  background: var(--tile);
 }
 
 .sprite {
   width: 86%;
   height: 86%;
   object-fit: contain;
-  filter: drop-shadow(0 8px 18px var(--glow));
   animation: pdex-pop 260ms ease, pdex-float 6s ease-in-out 260ms infinite;
 }
 
@@ -178,11 +171,6 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent 0 2px,
-    rgba(255, 255, 255, 0.045) 2px 3px
-  );
 }
 
 .screen[data-state="scan"] .scan::after {
@@ -190,8 +178,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 16%;
-  background: linear-gradient(var(--accent), transparent);
+  height: 2px;
+  background: var(--accent);
   animation: pdex-scan 900ms linear infinite;
 }
 
@@ -270,7 +258,6 @@
   width: 64px;
   height: 64px;
   object-fit: contain;
-  filter: drop-shadow(0 3px 6px var(--glow));
 }
 
 .cardName {
@@ -350,7 +337,6 @@
 }
 
 .go:hover:not(:disabled) {
-  box-shadow: 0 0 18px var(--glow);
 }
 
 .go:disabled {
@@ -397,7 +383,7 @@
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: linear-gradient(180deg, var(--accent-wash), transparent 55%), var(--tile);
+  background: var(--tile);
   transition: opacity 200ms ease;
 }
 
@@ -512,7 +498,7 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--ramp-2), var(--ramp-4));
+  background: var(--ramp-3);
   transition: width 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 

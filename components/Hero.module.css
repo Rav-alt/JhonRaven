@@ -20,13 +20,6 @@
   animation: noct-drift 11s ease-in-out infinite;
 }
 
-.figureGlow {
-  position: absolute;
-  inset: 6%;
-  background: radial-gradient(closest-side, var(--glow), transparent 72%);
-  filter: blur(14px);
-}
-
 .sprite {
   position: absolute;
   inset: 0;
@@ -34,22 +27,12 @@
   height: 100%;
   object-fit: contain;
   pointer-events: auto;
-  filter: drop-shadow(0 0 44px var(--glow));
-  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
-  mask-image: linear-gradient(to bottom, #000 62%, transparent 96%);
-}
-
-.figureScrim {
-  position: absolute;
-  inset: -20%;
-  background: radial-gradient(ellipse 62% 52% at 70% 52%, var(--scrim-a) 0%, var(--scrim-b) 52%, var(--scrim-c) 94%);
 }
 
 .copy {
   position: relative;
   z-index: 1;
   padding-left: 21%;
-  text-shadow: var(--halo);
 }
 
 /* Availability banner — a GitHub-style "available for hire" status, drawn
@@ -67,14 +50,14 @@
   padding: 9px 16px 9px 14px;
   border: 1px solid var(--accent);
   border-radius: 8px;
-  background: var(--accent-wash);
-  text-shadow: none;
+  background: var(--pg-flat);
+  box-shadow: inset 0 0 0 999px var(--accent-wash);
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
   transition: box-shadow 220ms ease, background-color 220ms ease;
 }
 
 .availability:hover {
-  box-shadow: 0 0 24px var(--glow);
+  border-color: var(--accent-hi);
 }
 
 .availability:focus-visible {
@@ -89,7 +72,6 @@
   height: 7px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--glow);
   animation: noct-pulse 2.4s ease-in-out infinite;
 }
 
@@ -147,7 +129,7 @@
 .kickerLine {
   width: 22px;
   height: 1px;
-  background: linear-gradient(to right, currentColor, transparent);
+  background: currentColor;
 }
 
 .name {
@@ -170,7 +152,7 @@
 .roleBar {
   width: 3px;
   height: 26px;
-  background: linear-gradient(var(--accent), transparent);
+  background: var(--accent);
 }
 
 .roleText {
@@ -223,12 +205,13 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--accent-text);
-  background: var(--accent-wash);
-  transition: box-shadow 220ms ease;
+  background: var(--pg-flat);
+  box-shadow: inset 0 0 0 999px var(--accent-wash);
+  transition: border-color 220ms ease;
 }
 
 .ctaPrimary:hover {
-  box-shadow: 0 0 24px var(--glow);
+  border-color: var(--accent-hi);
 }
 
 .ctaSecondary {
@@ -241,6 +224,7 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--muted);
+  background: var(--pg-flat);
   transition: border-color 220ms ease;
 }
 
@@ -260,7 +244,7 @@
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: var(--card-shadow);
+  overflow: hidden;
 }
 
 .profileCard {
@@ -281,8 +265,7 @@
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  background: conic-gradient(from 200deg, var(--accent), var(--line), var(--accent));
-  opacity: 0.45;
+  border: 1px solid var(--accent);
 }
 
 .avatar {
@@ -350,202 +333,67 @@
   background: var(--accent-wash);
 }
 
-.graphCard {
-  position: relative;
-  padding: 18px 20px 14px;
+/* Spec sheet — ruled key/value rows under the profile, set in the mono face.
+   Real, current facts only (all from lib/data.ts plus a live clock). */
+.spec {
+  margin: 0;
+  border-top: 1px solid var(--line);
 }
 
-.graphHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.graphCount {
-  display: flex;
+.specRow {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
   align-items: baseline;
-  gap: 8px;
+  gap: 16px;
+  padding: 13px 22px;
 }
 
-.graphCountNum {
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--ink-strong);
-  letter-spacing: -0.01em;
+.specRow + .specRow {
+  border-top: 1px solid var(--line-soft);
 }
 
-.graphCountLabel {
-  font-size: 11px;
+.specKey {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--kicker);
-}
-
-.graphSpan {
-  font-size: 11px;
   color: var(--faint);
 }
 
-.graphBody {
+.specVal {
   display: flex;
-  gap: 10px;
-}
-
-/* The cells are fluid (aspect-ratio squares sized by the card width), so the
-   labels can't use a fixed row height. The column stretches to the graph's
-   full height; after skipping the month row (16px = 10px + 6px margin) it
-   splits the rest into 7 equal rows with the cells' 3px gap, so each label
-   centres on its row at any width. */
-.graphDays {
-  display: grid;
-  grid-template-rows: repeat(7, minmax(0, 1fr));
-  row-gap: 3px;
-  align-items: center;
-  padding-top: 16px;
-  font-size: 9px;
-  color: var(--faint);
-  line-height: 1;
-}
-
-/* Zero-height label boxes: the text overflows evenly around the row's centre,
-   so on phones (cells ~6px, text 9px) the labels can't inflate the rows. */
-.graphDays span {
-  display: flex;
-  align-items: center;
-  height: 0;
-  white-space: nowrap;
-}
-
-.graphMain {
-  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0;
   min-width: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-strong);
+  font-variant-numeric: tabular-nums;
 }
 
-.graphMonths {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 6px;
-  font-size: 9px;
-  color: var(--faint);
-  height: 10px;
-}
-
-.graphMonths span {
-  flex: 1;
-  min-width: 0;
-}
-
-.graphWeeks {
-  display: flex;
-  gap: 3px;
-}
-
-.graphWeek {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.graphCell {
-  aspect-ratio: 1;
-  border-radius: 2px;
-}
-
-/* Hovered / keyboard-selected day: a crisp ink ring, like GitHub's. */
-.graphCell[data-active] {
-  outline: 1px solid var(--ink-strong);
-  outline-offset: 1px;
-}
-
-.graphWeeks:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 5px;
-  border-radius: 3px;
-}
-
-/* Day tooltip — inverted ink-on-page so it tracks every palette in both
-   modes (ink-strong/pg-flat are the pair the contrast math already fits). */
-.graphTip {
-  position: absolute;
-  z-index: 2;
-  padding: 6px 9px;
-  border-radius: 6px;
-  background: var(--ink-strong);
-  color: var(--pg-flat);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.3;
-  white-space: nowrap;
-  pointer-events: none;
-  transform: translate(-50%, calc(-100% - 9px));
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 120ms ease, visibility 0s linear 120ms;
-}
-
-.graphTip[data-show] {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 120ms ease;
-}
-
-.graphTip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: calc(50% + var(--arrow-x, 0px));
-  border: 5px solid transparent;
-  border-top-color: var(--ink-strong);
-  transform: translateX(-50%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .graphTip,
-  .graphTip[data-show] {
-    transition: none;
-  }
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-.graphLegend {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
-  margin-top: 12px;
-  font-size: 10px;
+.specNote {
+  font-size: 12px;
   color: var(--faint);
 }
 
-.graphLegend span:first-child {
-  margin-right: 3px;
+.specLink {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-soft);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 180ms ease;
 }
 
-.graphLegend span:last-child {
-  margin-left: 3px;
-}
-
-.legendCell {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+.specLink:hover {
+  color: var(--accent-text);
+  text-decoration-color: currentColor;
 }
 
 /* Mobile: single column. The sprite drops behind the copy as a faint
-   backdrop (the scrim + text halo keep the copy legible), and the profile
-   and graph cards stack below. */
+   watermark so the text stays readable, and the profile / spec card stacks
+   below. */
 @media (max-width: 900px) {
   .section {
     grid-template-columns: 1fr;
@@ -562,10 +410,6 @@
     transform: translateX(-50%);
     opacity: 0.16;
     animation: none;
-  }
-
-  .figureScrim {
-    inset: -30%;
   }
 
   .copy {
@@ -595,6 +439,12 @@
   .avatarWrap {
     width: 84px;
     height: 84px;
+  }
+
+  .specRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 12px 18px;
   }
 
   /* Narrow phones: detail drops to its own line under the label, the

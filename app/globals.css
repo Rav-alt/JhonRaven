@@ -6,10 +6,13 @@
    where the variables are consumed (body + headings below). */
 
 /* Dialga theme tokens — dark ("Shiny") is the default; light ("Regular")
-   overrides every token so the whole page recolors when data-theme flips. */
+   overrides every token so the whole page recolors when data-theme flips.
+   Every colour is flat: no gradients, glows, blurs or soft shadows. Light
+   mode surfaces are plain #ffffff. --pg / --halo / --glow are kept only so
+   older cached palettes and the engine's key set stay valid. */
 :root,
 :root[data-theme="dark"] {
-  --pg: radial-gradient(1200px 700px at 78% -6%, #23507f 0%, #16304f 38%, #0e1a2e 76%);
+  --pg: #0e1a2e;
   --pg-flat: #0e1a2e;
   --ink: #e3ecf7;
   --ink-strong: #f0f6ff;
@@ -22,10 +25,10 @@
   --accent-wash: #6fb6ff14;
   --line: #22405f;
   --line-soft: #2c4a6e;
-  --card: linear-gradient(160deg, #162944cc, #102037cc);
-  --card-shadow: 0 18px 40px #05101fa0;
+  --card: #142843;
+  --card-shadow: none;
   --tile: #12233c;
-  --chip-bg: #12233c99;
+  --chip-bg: #12233c;
   --grid-ink: #ffffff0a;
   --gem-hi: #bfe0ff;
   --gem-lo: #3f7fd1;
@@ -33,7 +36,7 @@
   --scrim-a: #0b1626f2;
   --scrim-b: #0b1626d9;
   --scrim-c: #0b162600;
-  --halo: 0 2px 22px #0b1626, 0 0 8px #0b1626cc;
+  --halo: none;
   --fig-op: 0.9;
   --icon-ink: #cfe6ff;
   --ramp-0: #152a44;
@@ -41,14 +44,23 @@
   --ramp-2: #2f74b8;
   --ramp-3: #59a6ee;
   --ramp-4: #a8d6ff;
-  --sweep: linear-gradient(120deg, #16304f, #24537f);
+  --sweep: #1d3f66;
   --on-sweep: #f2f8ff;
+  /* Navbar pill — neutral near-black in both modes, never derived. */
+  --bar-bg: #04070d;
+  --bar-line: #1f2a3a;
+  --bar-ink: #f4f7fb;
+  --bar-muted: #a9b4c3;
+  --bar-hover: #141c28;
+  --bar-btn: #f4f7fb;
+  --bar-btn-ink: #04070d;
+  --bar-btn-hover: #d9e0ea;
   --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/483.png");
 }
 
 :root[data-theme="light"] {
-  --pg: radial-gradient(1200px 700px at 78% -6%, #d7e7f8 0%, #e9f1fa 40%, #f7fafd 78%);
-  --pg-flat: #f7fafd;
+  --pg: #ffffff;
+  --pg-flat: #ffffff;
   --ink: #1d3150;
   --ink-strong: #0f1e33;
   --muted: #4c6685;
@@ -60,27 +72,35 @@
   --accent-wash: #2f74b810;
   --line: #d3e0ee;
   --line-soft: #dbe6f2;
-  --card: linear-gradient(160deg, #ffffffee, #f1f6fcee);
-  --card-shadow: 0 14px 34px #8aa9cc2e;
+  --card: #ffffff;
+  --card-shadow: none;
   --tile: #ffffff;
-  --chip-bg: #ffffffcc;
+  --chip-bg: #ffffff;
   --grid-ink: #1b3a5c0d;
   --gem-hi: #7fb6e8;
   --gem-lo: #2f74b8;
   --glow: #7fb6e855;
-  --scrim-a: #f7fafde6;
-  --scrim-b: #f7fafdb3;
-  --scrim-c: #f7fafd00;
+  --scrim-a: #ffffffe6;
+  --scrim-b: #ffffffb3;
+  --scrim-c: #ffffff00;
   --fig-op: 1;
-  --halo: 0 1px 14px #f7fafd, 0 0 6px #ffffffcc;
+  --halo: none;
   --icon-ink: #1f5da8;
   --ramp-0: #e6edf6;
   --ramp-1: #c2dbf3;
   --ramp-2: #7fb6e8;
   --ramp-3: #3f8ad4;
   --ramp-4: #1d5896;
-  --sweep: linear-gradient(120deg, #1d5896, #2f74b8);
+  --sweep: #1d5896;
   --on-sweep: #f2f8ff;
+  --bar-bg: #0b0f17;
+  --bar-line: #0b0f17;
+  --bar-ink: #ffffff;
+  --bar-muted: #b4bcc8;
+  --bar-hover: #1b2230;
+  --bar-btn: #ffffff;
+  --bar-btn-ink: #0b0f17;
+  --bar-btn-hover: #e4e8ee;
   --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/483.png");
 }
 

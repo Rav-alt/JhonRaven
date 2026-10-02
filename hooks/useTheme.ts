@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { PokeSkin, Theme } from "@/lib/data";
 import { DEFAULT_POKE } from "@/lib/data";
-import { buildCache, THEME_VARS, type PokeCache } from "@/lib/pokeTheme";
+import { buildCache, CACHE_VERSION, THEME_VARS, type PokeCache } from "@/lib/pokeTheme";
 import { fetchPokemon } from "@/lib/pokeApi";
 
 const MODE_KEY = "dialga-portfolio-theme";
@@ -22,7 +22,14 @@ function readCache(): PokeCache | null {
     const raw = localStorage.getItem(POKE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as PokeCache;
-    if (parsed && typeof parsed.dex === "number" && parsed.dark && parsed.light) return parsed;
+    if (parsed && typeof parsed.dex === "number" && Array.isArray(parsed.types)) {
+      if (parsed.v === CACHE_VERSION && parsed.dark && parsed.light) return parsed;
+      // Saved by an older engine (e.g. gradient tokens) — re-derive from the
+      // stored types and overwrite, so returning visitors get the flat palette.
+      const fresh = buildCache({ dex: parsed.dex, display: parsed.display, types: parsed.types });
+      localStorage.setItem(POKE_KEY, JSON.stringify(fresh));
+      return fresh;
+    }
   } catch {
     // corrupt / unavailable — fall back to the base palette
   }

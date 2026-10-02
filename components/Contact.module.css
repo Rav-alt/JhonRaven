@@ -4,7 +4,7 @@
 
 .topRule {
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--line-soft) 14%, var(--line-soft) 86%, transparent);
+  background: var(--line-soft);
   margin-bottom: 64px;
 }
 
@@ -27,8 +27,7 @@
   bottom: 0;
   width: 84%;
   height: 78%;
-  background: radial-gradient(closest-side, var(--glow), transparent 74%);
-  filter: blur(18px);
+  display: none;
 }
 
 .portraitFrame {
@@ -47,8 +46,6 @@
 .portraitImgDark {
   object-fit: contain;
   mix-blend-mode: lighten;
-  -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
-  mask-image: linear-gradient(to bottom, #000 66%, transparent 98%);
 }
 
 .portraitImgLight {
@@ -79,7 +76,7 @@
 .kickerLine {
   width: 22px;
   height: 1px;
-  background: linear-gradient(to right, currentColor, transparent);
+  background: currentColor;
 }
 
 .headline {
@@ -196,7 +193,6 @@ button.social {
 
 .socialMark.on {
   background: var(--accent);
-  box-shadow: 0 0 14px var(--glow);
 }
 
 .socialLabel {
@@ -228,7 +224,6 @@ button.social {
    scrim backdrop), scaled down to a single question. */
 .backdrop {
   background: var(--scrim-b);
-  backdrop-filter: blur(6px);
   animation: noct-fade 220ms ease both;
 }
 

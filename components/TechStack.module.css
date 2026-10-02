@@ -21,7 +21,7 @@
 .rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, var(--line-soft), transparent);
+  background: var(--line-soft);
 }
 
 .tail {

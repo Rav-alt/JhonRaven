@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 // Display + body pairing. Space Grotesk carries the headings (a precise,
@@ -16,6 +16,14 @@ const body = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-body",
+  display: "swap",
+});
+
+// Mono face for spec-sheet metadata only (Hero spec rows, figure labels).
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -38,7 +46,10 @@ const THEME_INIT = `
     el.setAttribute("data-theme", theme);
     var raw = localStorage.getItem("dialga-portfolio-poke");
     if (raw) {
-      var vars = (JSON.parse(raw) || {})[theme];
+      var cache = JSON.parse(raw) || {};
+      // Only replay caches from the current engine (CACHE_VERSION in
+      // lib/pokeTheme.ts); older ones are rebuilt by useTheme after hydration.
+      var vars = cache.v === 2 ? cache[theme] : null;
       if (vars) for (var k in vars) el.style.setProperty(k, vars[k]);
     }
   } catch (e) {
@@ -52,7 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-theme="dark"
-      className={`${display.variable} ${body.variable}`}
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -1,0 +1,198 @@
+/* GitHub contribution graph — flat fills only; cell colours come from the
+   derived --ramp-* tokens so it repaints with the active Pokémon. */
+
+.graphCard {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 20px 14px;
+}
+
+.graphHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.graphCount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.graphCountNum {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-strong);
+  letter-spacing: -0.01em;
+}
+
+.graphCountLabel {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--kicker);
+}
+
+.graphSpan {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.graphBody {
+  display: flex;
+  gap: 10px;
+}
+
+/* The cells are fluid (aspect-ratio squares sized by the card width), so the
+   labels can't use a fixed row height. The column stretches to the graph's
+   full height; after skipping the month row (16px = 10px + 6px margin) it
+   splits the rest into 7 equal rows with the cells' 3px gap, so each label
+   centres on its row at any width. */
+.graphDays {
+  display: grid;
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  row-gap: 3px;
+  align-items: center;
+  padding-top: 16px;
+  font-size: 9px;
+  color: var(--faint);
+  line-height: 1;
+}
+
+/* Zero-height label boxes: the text overflows evenly around the row's centre,
+   so on phones (cells ~6px, text 9px) the labels can't inflate the rows. */
+.graphDays span {
+  display: flex;
+  align-items: center;
+  height: 0;
+  white-space: nowrap;
+}
+
+.graphMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.graphMonths {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 6px;
+  font-size: 9px;
+  color: var(--faint);
+  height: 10px;
+}
+
+.graphMonths span {
+  flex: 1;
+  min-width: 0;
+}
+
+.graphWeeks {
+  display: flex;
+  gap: 3px;
+}
+
+.graphWeek {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.graphCell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+}
+
+/* Hovered / keyboard-selected day: a crisp ink ring, like GitHub's. */
+.graphCell[data-active] {
+  outline: 1px solid var(--ink-strong);
+  outline-offset: 1px;
+}
+
+.graphWeeks:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+  border-radius: 3px;
+}
+
+/* Day tooltip — inverted ink-on-page so it tracks every palette in both
+   modes (ink-strong/pg-flat are the pair the contrast math already fits). */
+.graphTip {
+  position: absolute;
+  z-index: 2;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: var(--ink-strong);
+  color: var(--pg-flat);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 9px));
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease, visibility 0s linear 120ms;
+}
+
+.graphTip[data-show] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 120ms ease;
+}
+
+.graphTip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% + var(--arrow-x, 0px));
+  border: 5px solid transparent;
+  border-top-color: var(--ink-strong);
+  transform: translateX(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphTip,
+  .graphTip[data-show] {
+    transition: none;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.graphLegend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--faint);
+}
+
+.graphLegend span:first-child {
+  margin-right: 3px;
+}
+
+.graphLegend span:last-child {
+  margin-left: 3px;
+}
+
+.legendCell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}

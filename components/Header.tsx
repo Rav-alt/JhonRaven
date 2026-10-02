@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
+import { Moon, Sun } from "lucide-react";
 import styles from "./Header.module.css";
 import Pokedex from "./Pokedex";
 import { FEATURED, NAV } from "@/lib/data";
-import { letterSpreadOffsets } from "@/lib/letterSpread";
-import { useIndexHover } from "@/hooks/useIndexHover";
 import type { PokeSkin, Theme } from "@/lib/data";
+import { tileSpriteFor } from "@/lib/pokeTheme";
 
+/** Floating pill navbar: the current Pokémon as the "app icon", plain text
+ *  links, a theme toggle, and one solid button that opens the Pokédex —
+ *  the site's signature feature gets the primary action. */
 export default function Header({
   name,
   theme,
@@ -22,86 +24,51 @@ export default function Header({
   poke: PokeSkin | null;
   setPoke: (skin: PokeSkin) => void;
 }) {
-  const { hovered, onEnter, onLeave } = useIndexHover();
-  const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [pokedexOpen, setPokedexOpen] = useState(false);
 
   const activeDex = poke?.dex ?? FEATURED[0].dex;
   const currentLabel = poke?.display ?? FEATURED[0].display;
-
-  const onMove = (i: number) => (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const el = thumbRefs.current[i];
-    if (!el) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const xPct = (e.clientX - r.left) / r.width - 0.5;
-    const yPct = (e.clientY - r.top) / r.height - 0.5;
-    el.style.left = `${r.width * (0.5 + xPct * 0.7)}px`;
-    el.style.top = `${40 + yPct * 10}px`;
-  };
+  const nextMode = theme === "dark" ? "Regular" : "Shiny";
 
   return (
     <header className={styles.header}>
-      <div className={styles.brand}>
-        <div className={styles.name}>{name}</div>
-      </div>
-      <div className={styles.right}>
-        <nav className={styles.nav}>
-          {NAV.map((l, i) => {
-            const on = hovered === i;
-            const offsets = letterSpreadOffsets(l.label);
-            return (
-              <a
-                key={l.href}
-                href={l.href}
-                className={styles.navLink}
-                onMouseEnter={() => onEnter(i)}
-                onMouseLeave={() => onLeave(i)}
-                onMouseMove={onMove(i)}
-              >
-                <span className={styles.navLetters}>
-                  {l.label.split("").map((c, j) => (
-                    <span
-                      key={j}
-                      className={styles.navLetter}
-                      style={{
-                        transitionDelay: `${j * 22}ms`,
-                        transform: on ? `translateX(${offsets[j].toFixed(2)}px)` : "none",
-                        color: on ? "var(--ink-strong)" : "inherit",
-                      }}
-                    >
-                      {c}
-                    </span>
-                  ))}
-                </span>
-                {l.img && (
-                  <div
-                    ref={(el) => {
-                      thumbRefs.current[i] = el;
-                    }}
-                    className={`${styles.navThumbWrap} ${on ? styles.on : ""}`}
-                  >
-                    <Image src={l.img} alt="" fill sizes="104px" />
-                  </div>
-                )}
-              </a>
-            );
-          })}
+      <div className={styles.bar}>
+        <a href="#main" className={styles.brand}>
+          <span className={styles.icon} aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={tileSpriteFor(activeDex, theme)} alt="" className={styles.iconSprite} />
+          </span>
+          <span className={styles.name}>{name}</span>
+        </a>
+
+        <nav className={styles.nav} aria-label="Primary">
+          {NAV.map((l) => (
+            <a key={l.href} href={l.href} className={styles.navLink}>
+              {l.label}
+            </a>
+          ))}
         </nav>
 
-        <button
-          type="button"
-          className={styles.themeBtn}
-          onClick={() => setPokedexOpen(true)}
-          title="Open the Pokédex"
-        >
-          <span className={styles.themeGem} />
-          {currentLabel}
-        </button>
-
-        <button className={styles.themeBtn} onClick={toggleTheme} title="Switch theme">
-          <span className={styles.themeGem} />
-          {theme === "dark" ? "Shiny" : "Regular"}
-        </button>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.modeBtn}
+            onClick={toggleTheme}
+            aria-label={`Switch to ${nextMode} mode`}
+            title={`Switch to ${nextMode} mode`}
+          >
+            {theme === "dark" ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+          </button>
+          <button
+            type="button"
+            className={styles.dexBtn}
+            onClick={() => setPokedexOpen(true)}
+            title={`Current: ${currentLabel}`}
+          >
+            <span className={styles.dexGem} aria-hidden="true" />
+            Open Pokédex
+          </button>
+        </div>
       </div>
 
       <Pokedex

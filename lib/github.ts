@@ -39,10 +39,18 @@ const LEVEL: Record<string, number> = {
   FOURTH_QUARTILE: 4,
 };
 
+// GitHub buckets contributions into calendar days using the time zone offset
+// of the `from`/`to` arguments; with no arguments it uses UTC. Manila is
+// UTC+8, so anything pushed between 00:00 and 08:00 local time used to land on
+// the previous day. Passing explicit +08:00 bounds makes the days match the
+// github.com profile. (The Philippines has no DST, so a fixed offset is safe.)
+const TZ_OFFSET = "+08:00";
+const TZ_OFFSET_MS = 8 * 3_600_000;
+
 const QUERY = `
-  query($login: String!) {
+  query($login: String!, $from: DateTime!, $to: DateTime!) {
     user(login: $login) {
-      contributionsCollection {
+      contributionsCollection(from: $from, to: $to) {
         contributionCalendar {
           weeks {
             contributionDays { date contributionCount contributionLevel }
@@ -65,13 +73,31 @@ const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 const DAY_MS = 86_400_000;
 const isoDate = (d: Date) => d.toISOString().slice(0, 10);
 
+/** Today and the Sunday that opens the visible window, as UTC-midnight
+ *  timestamps of the *Manila* calendar date (read them with getUTC*). */
+function windowDays() {
+  const local = new Date(Date.now() + TZ_OFFSET_MS); // Manila wall clock
+  const today = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
+  const firstSunday = today - local.getUTCDay() * DAY_MS - (WEEKS_SHOWN - 1) * 7 * DAY_MS;
+  return { today, firstSunday };
+}
+
+/** `from`/`to` for the API, carrying the Manila offset so GitHub groups days
+ *  the same way the profile page does. Stable for a whole day, so the hourly
+ *  fetch cache still hits. */
+function windowBounds() {
+  const { today, firstSunday } = windowDays();
+  return {
+    from: `${isoDate(new Date(firstSunday))}T00:00:00${TZ_OFFSET}`,
+    to: `${isoDate(new Date(today))}T23:59:59${TZ_OFFSET}`,
+  };
+}
+
 /** Placeholder calendar: real dates ending today (Sun→Sat columns like
  *  GitHub's), seeded levels, and a plausible count per level. */
 function fallback(): ContributionGraph {
   const levels = contributionGrid(WEEKS_SHOWN);
-  const now = new Date();
-  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  const firstSunday = today - new Date(today).getUTCDay() * DAY_MS - (WEEKS_SHOWN - 1) * 7 * DAY_MS;
+  const { today, firstSunday } = windowDays();
 
   const weeks: ContributionDay[][] = levels.map((week, wi) =>
     week
@@ -116,7 +142,7 @@ export async function getContributions(): Promise<ContributionGraph> {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query: QUERY, variables: { login: LOGIN } }),
+      body: JSON.stringify({ query: QUERY, variables: { login: LOGIN, ...windowBounds() } }),
       next: { revalidate: 3600 },
       signal: AbortSignal.timeout(8000),
     });

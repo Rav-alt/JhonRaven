@@ -1,0 +1,170 @@
+/* GitHub profile card + spec-sheet rows. Lives in About next to the
+   contribution graph, so everything GitHub sits together. Flat fills only. */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.profileCard {
+  display: flex;
+  align-items: center;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 22px;
+}
+
+.avatarWrap {
+  position: relative;
+  flex: none;
+  width: 76px;
+  height: 76px;
+}
+
+.avatarRing {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+}
+
+.avatar {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar img {
+  object-fit: cover;
+}
+
+.profileBody {
+  min-width: 0;
+}
+
+.profileName {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ink-strong);
+  letter-spacing: -0.01em;
+}
+
+.profileHandle {
+  font-size: 14px;
+  color: var(--faint);
+  margin-top: 2px;
+}
+
+.profileBio {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.profileStats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  white-space: nowrap;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.profileStats strong {
+  color: var(--ink-strong);
+  font-weight: 500;
+}
+
+.followBtn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-text);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.followBtn:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* Spec sheet — ruled key/value rows under the profile, set in the mono face.
+   Real, current facts only (all from lib/data.ts plus a live clock). */
+.spec {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Label above value: the card sits in About's narrow column. */
+.specRow {
+  display: grid;
+  gap: 4px;
+  padding: 12px 22px;
+}
+
+.specRow + .specRow {
+  border-top: 1px solid var(--line-soft);
+}
+
+.specKey {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.specVal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0;
+  min-width: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+.specNote {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.specLink {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-soft);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 180ms ease;
+}
+
+.specLink:hover {
+  color: var(--accent-text);
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 560px) {
+  .profileCard {
+    padding: 18px;
+    gap: 16px;
+  }
+
+  .avatarWrap {
+    width: 68px;
+    height: 68px;
+  }
+
+  .specRow {
+    padding: 12px 18px;
+  }
+}

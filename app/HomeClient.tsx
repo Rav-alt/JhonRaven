@@ -38,8 +38,8 @@ export default function HomeClient({ graph }: { graph: ContributionGraph }) {
           setPoke={setPoke}
         />
         <main id="main">
-          <Hero name={NAME} handle={HANDLE} tagline={TAGLINE} theme={theme} poke={poke} />
-          <About graph={graph} />
+          <Hero name={NAME} tagline={TAGLINE} theme={theme} poke={poke} />
+          <About name={NAME} handle={HANDLE} graph={graph} />
           <TechStack />
           <Projects />
           <Experience />

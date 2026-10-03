@@ -15,12 +15,14 @@ function StatusBadge({ project, className }: { project: Project; className?: str
   );
 }
 
-/** Silent demo loops. Autoplays muted (required by iOS/Chrome), but never for
+/** Demo loops. Autoplays muted (required by iOS/Chrome), but never for
  * visitors who ask for reduced motion, and always has a visible pause control
- * since the loops run longer than five seconds (WCAG 2.2.2). */
+ * since the loops run longer than five seconds (WCAG 2.2.2). Clips with a
+ * soundtrack get a speaker button; sound only ever starts on a visitor's tap. */
 function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const clip = clips[index];
 
@@ -38,6 +40,21 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
     if (!video) return;
     if (video.paused) video.play().catch(() => setPlaying(false));
     else video.pause();
+  };
+
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+    // Turning sound on is a deliberate request to hear it, so start playback too.
+    if (!video.muted && video.paused) video.play().catch(() => setPlaying(false));
+  };
+
+  const pick = (i: number) => {
+    setIndex(i);
+    // The next clip mounts a fresh, muted <video>; keep the button in step.
+    setMuted(true);
   };
 
   return (
@@ -63,13 +80,33 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
       </div>
 
       <div className={styles.playerBar}>
-        <button type="button" className={styles.playBtn} onClick={toggle} aria-label={playing ? "Pause demo" : "Play demo"}>
-          {playing ? (
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" /></svg>
-          ) : (
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" /></svg>
+        <div className={styles.playerControls}>
+          <button type="button" className={styles.playBtn} onClick={toggle} aria-label={playing ? "Pause demo" : "Play demo"}>
+            {playing ? (
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" /></svg>
+            ) : (
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" /></svg>
+            )}
+          </button>
+          {clip.audio && (
+            <button
+              type="button"
+              className={[styles.playBtn, styles.soundBtn].join(" ")}
+              onClick={toggleSound}
+              aria-label={muted ? "Turn sound on" : "Turn sound off"}
+              aria-pressed={!muted}
+            >
+              <svg viewBox="0 0 14 12" aria-hidden="true">
+                <path d="M1 4.25h2.5L7 1.25v9.5l-3.5-3H1z" />
+                {muted ? (
+                  <path className={styles.soundStroke} d="M9.5 4l3.5 4M13 4l-3.5 4" />
+                ) : (
+                  <path className={styles.soundStroke} d="M9.25 3.75a3 3 0 0 1 0 4.5M11 2a5.5 5.5 0 0 1 0 8" />
+                )}
+              </svg>
+            </button>
           )}
-        </button>
+        </div>
 
         <div className={styles.clipTabs} role="group" aria-label="Demo clips">
           {clips.map((c, i) => (
@@ -78,7 +115,7 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
               type="button"
               className={styles.clipTab}
               aria-pressed={i === index}
-              onClick={() => setIndex(i)}
+              onClick={() => pick(i)}
             >
               <span className={styles.clipNum}>{String(i + 1).padStart(2, "0")}</span>
               {c.label}
@@ -139,7 +176,20 @@ export default function Projects() {
                   <span className={styles.modalDot} />
                   <span className={styles.modalDot} />
                 </div>
-                <span className={styles.modalUrl}>{project.chrome}</span>
+                {project.href ? (
+                  <a
+                    className={[styles.modalUrl, styles.modalUrlLink].join(" ")}
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {project.chrome}
+                    <span aria-hidden="true"> ↗</span>
+                    <span className={styles.srOnly}> (opens in a new tab)</span>
+                  </a>
+                ) : (
+                  <span className={styles.modalUrl}>{project.chrome}</span>
+                )}
                 <button className={styles.closeBtn} onClick={() => setOpenId(null)} aria-label="Close">
                   ×
                 </button>

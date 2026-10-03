@@ -104,7 +104,16 @@ export const GRID_STACK = ["React", "Next.js", "TypeScript", "Git"];
  * lowercase: Windows ignores case, the production server doesn't. */
 /** `src` is the H.264 MP4 every major browser plays; `webm` is a VP9 fallback
  * for the few that ship without H.264. */
-export type ProjectClip = { label: string; caption: string; src: string; webm: string; poster: string };
+export type ProjectClip = {
+  label: string;
+  caption: string;
+  src: string;
+  webm: string;
+  poster: string;
+  /** The file has a soundtrack. The player still starts muted (browsers block
+   * autoplay with sound) and shows a speaker button to turn it on. */
+  audio?: boolean;
+};
 
 export type ProjectMedia =
   | { kind: "image"; src: string; alt: string }
@@ -121,6 +130,8 @@ export type Project = {
   role: string;
   /** Text in the modal's window bar: a URL for sites, a file name for apps. */
   chrome: string;
+  /** Live URL. When set, the window-bar text becomes a link to it. */
+  href?: string;
   thumb: { src: string; alt: string };
   media: ProjectMedia;
   description: string[];
@@ -129,6 +140,41 @@ export type Project = {
 };
 
 export const PROJECTS: Project[] = [
+  {
+    id: "whothatpokemon",
+    name: "Who's That Pokémon?",
+    owner: "Browser guessing game",
+    status: "Live · 2026",
+    ended: false,
+    role: "Designed & built solo",
+    chrome: "whothatpokemon.vercel.app",
+    href: "https://whothatpokemon.vercel.app",
+    thumb: { src: "/images/whothatpokemon-screenshot.png", alt: "Who's That Pokémon home page with a face-down card and three game-mode cards" },
+    media: {
+      kind: "video",
+      clips: [
+        {
+          label: "Trailer",
+          caption: "Thirty seconds of all three modes: a classic round caught in four cards, a shadow named, and a Higher or Lower streak.",
+          src: "/videos/whothatpokemon-trailer.mp4",
+          webm: "/videos/whothatpokemon-trailer.webm",
+          poster: "/videos/whothatpokemon-trailer-poster.jpg",
+          audio: true,
+        },
+      ],
+    },
+    description: [
+      "A Pokémon guessing game dealt like a trading-card duel. Every guess lands on the table as a card and is scored against the mystery Pokémon on type, generation, evolution stage, colour, habitat and size: green for a match, amber for close, arrows for higher or lower.",
+      "It has three modes: Classic, Shadow Sprite (name the silhouette before it lights up) and Higher or Lower (call which Pokémon is heavier, taller or stronger and chase a streak). All 1,025 Pokémon load live from PokéAPI through a small cached client, and game state stays in the browser, so there's no account to make.",
+    ],
+    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS", "shadcn/ui", "PokéAPI"],
+    facts: [
+      { k: "Role", v: "Solo — design & build" },
+      { k: "Modes", v: "Classic, Shadow, Higher or Lower" },
+      { k: "Data", v: "PokéAPI, Gen 1–9" },
+      { k: "Hosting", v: "Vercel, no account" },
+    ],
+  },
   {
     id: "snap",
     name: "Snap",

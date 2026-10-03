@@ -43,17 +43,6 @@ export default function ProfileCard({ name, handle }: { name: string; handle: st
           <div className={styles.profileName}>{name}</div>
           <div className={styles.profileHandle}>{handle}</div>
           <div className={styles.profileBio}>We do what we do.</div>
-          <div className={styles.profileStats}>
-            <span>
-              <strong>528</strong> followers
-            </span>
-            <span>
-              <strong>140</strong> following
-            </span>
-            <a href="#contact" className={styles.followBtn}>
-              Follow
-            </a>
-          </div>
         </div>
       </div>
 

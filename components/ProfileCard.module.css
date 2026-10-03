@@ -11,7 +11,6 @@
 .profileCard {
   display: flex;
   align-items: center;
-  align-items: flex-start;
   gap: 18px;
   padding: 22px;
 }
@@ -63,37 +62,6 @@
   line-height: 1.5;
   color: var(--muted);
   margin-top: 10px;
-}
-
-.profileStats {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
-  white-space: nowrap;
-  margin-top: 14px;
-  font-size: 12px;
-  color: var(--faint);
-}
-
-.profileStats strong {
-  color: var(--ink-strong);
-  font-weight: 500;
-}
-
-.followBtn {
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--accent-text);
-  border: 1px solid var(--line-soft);
-  border-radius: 999px;
-  transition: border-color 220ms ease, background-color 220ms ease;
-}
-
-.followBtn:hover {
-  border-color: var(--accent);
-  background: var(--accent-wash);
 }
 
 /* Spec sheet — ruled key/value rows under the profile, set in the mono face.

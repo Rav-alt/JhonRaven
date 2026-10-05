@@ -141,6 +141,40 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    id: "bai",
+    name: "B.AI",
+    owner: "Metro Manila commute chatbot",
+    status: "Live · 2026",
+    ended: false,
+    role: "Designed & built solo",
+    chrome: "bai-wine.vercel.app",
+    href: "https://bai-wine.vercel.app",
+    thumb: { src: "/images/bai-screenshot.png", alt: "B.AI answer telling a commuter to flag down the bus with the signboard Baclaran – SM Fairview" },
+    media: {
+      kind: "video",
+      clips: [
+        {
+          label: "Promo",
+          caption: "Fifty seconds from Pedro Gil Taft to España: asked in Taglish, answered with the signboard to flag down, a map, and a yes or no on bus versus jeep.",
+          src: "/videos/bai-promo.mp4",
+          webm: "/videos/bai-promo.webm",
+          poster: "/videos/bai-promo-poster.jpg",
+        },
+      ],
+    },
+    description: [
+      "A commute buddy for Metro Manila. Google Maps draws a line on a map, but it doesn't tell you which signboard to look for. B.AI answers the way a fellow commuter would: which jeep, bus or train to board, where to flag it down, where to get off and where to transfer, with a map under every answer.",
+      "Ask in English, Tagalog or Taglish, by landmark, station or street corner. The AI only reads the question and writes the reply; the routing itself is plain TypeScript over 4,887 stops and 1,721 route patterns from the DOTC GTFS feed, so it never invents a route. It also checks named options (\"bus to SM Fairview or jeep to Divisoria?\") and runs entirely on free tiers.",
+    ],
+    stack: ["Next.js 16", "TypeScript", "Gemini", "Leaflet", "GTFS", "Tailwind CSS"],
+    facts: [
+      { k: "Role", v: "Solo — design & build" },
+      { k: "Modes", v: "Jeep, bus, LRT / MRT" },
+      { k: "Data", v: "DOTC GTFS, 4,887 stops" },
+      { k: "Hosting", v: "Vercel, free tiers only" },
+    ],
+  },
+  {
     id: "whothatpokemon",
     name: "Who's That Pokémon?",
     owner: "Browser guessing game",

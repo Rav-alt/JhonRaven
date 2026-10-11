@@ -204,3 +204,10 @@ button {
   font-size: 0.95rem;
 }
 
+/* Theme switch (hooks/useTheme.ts). Turn off the browser's default
+   cross-fade so the only motion is the circle the new theme grows in. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

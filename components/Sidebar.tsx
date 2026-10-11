@@ -67,7 +67,7 @@ export default function Sidebar({ name }: { name: string }) {
       <button
         type="button"
         className={styles.theme}
-        onClick={toggleTheme}
+        onClick={(e) => toggleTheme(e.currentTarget)}
         aria-label={theme ? `Switch to ${next} mode` : "Switch theme"}
       >
         <span className={styles.themeIcon} aria-hidden="true" />

@@ -1,318 +1,120 @@
-.section {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 78vh;
-  padding: 24px 0 88px;
-}
-
-/* Corner readout — mono labels framing the hero like a Pokédex screen
-   (after kaisermann.me's channel/date corners, minus the CRT noise). */
-.readout {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 14px;
-  margin-bottom: clamp(40px, 7vh, 72px);
-  border-bottom: 1px solid var(--line-soft);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-/* Greeting with the active Pokémon as a small pixel sprite. */
-.greeting {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.spriteTile {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--tile);
-  overflow: hidden;
-}
-
-.sprite {
-  width: 64px;
-  height: 64px;
-  image-rendering: pixelated;
-}
-
-.greetText {
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-size: clamp(18px, 1.8vw, 22px);
-  letter-spacing: -0.01em;
-  color: var(--muted);
-}
-
-/* Lower band: role + tagline on the left, status / stack / buttons on the
-   right — the details sit under the big name, asymmetric 7/5 split. */
-.lower {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 56px;
-  align-items: end;
-  margin-top: 36px;
-}
-
-.lead {
-  min-width: 0;
-}
-
-.side {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-/* Availability banner — a GitHub-style "available for hire" status, drawn
-   in the site's own vocabulary: the pulsing dot from the Current badges and
-   the notched corner from the Experience cards. Hue comes only from the
-   derived accent tokens, so it repaints with every Pokémon. */
-.availability {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 8px 12px;
-  max-width: 100%;
-  margin-bottom: 26px;
-  white-space: nowrap;
-  padding: 9px 16px 9px 14px;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  background: var(--pg-flat);
-  box-shadow: inset 0 0 0 999px var(--accent-wash);
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
-  transition: box-shadow 220ms ease, background-color 220ms ease;
-}
-
-.availability:hover {
-  border-color: var(--accent-hi);
-}
-
-.availability:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  clip-path: none;
-}
-
-.availDot {
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: noct-pulse 2.4s ease-in-out infinite;
-}
-
-.availLabel {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-}
-
-.availSep {
-  width: 1px;
-  height: 14px;
-  background: var(--line-soft);
-}
-
-.availDetail {
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.availGo {
-  font-size: 13px;
-  color: var(--accent-text);
-  transition: transform 220ms ease;
-}
-
-.availability:hover .availGo {
-  transform: translateX(3px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .availDot {
-    animation: none;
-  }
-  .availGo {
-    transition: none;
-  }
+.hero {
+  padding-block: clamp(28px, 5vw, 64px) clamp(48px, 7vw, 96px);
 }
 
 .name {
+  font-size: var(--name-size);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  margin-left: -0.04em;
+}
+
+/* Each line is its own mask, so the words can rise up out of it on load. */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.09em;
+  margin-bottom: -0.09em;
+}
+
+.line > span {
+  display: inline-block;
+}
+
+/* While docking, the name leaves the flow and is placed by transform alone.
+   pointer-events stay off so it never blocks the links beneath it. */
+:global(.docking) .name {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  z-index: 40;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.band {
+  display: grid;
+  grid-template-columns: var(--side) minmax(0, 1fr);
+  column-gap: var(--colgap);
+  margin-top: clamp(28px, 4vw, 56px);
+}
+
+.main {
+  grid-column: 2;
+  display: grid;
+  gap: 28px;
+  max-width: 58ch;
+}
+
+.lede {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.facts dt {
+  color: var(--mid);
+  font-size: 0.88rem;
+}
+
+.facts dd {
+  margin: 0;
   font-weight: 500;
-  font-size: clamp(44px, 8.2vw, 112px);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  margin: 0;
-  color: var(--ink-strong);
-  text-wrap: balance;
+  line-height: 1.35;
 }
 
-.role {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.roleBar {
-  width: 3px;
-  height: 26px;
-  background: var(--accent);
-}
-
-.roleText {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(19px, 2vw, 26px);
-  letter-spacing: -0.015em;
-  color: var(--accent-text);
-}
-
-.tagline {
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-size: clamp(18px, 1.7vw, 22px);
-  line-height: 1.55;
-  letter-spacing: -0.01em;
-  color: var(--muted);
-  max-width: 34ch;
-  margin: 0;
-  text-wrap: pretty;
-}
-
-.chips {
+.actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 32px;
+  gap: 12px 28px;
+  align-items: center;
 }
 
-.chip {
-  padding: 5px 11px;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  border: 1px solid var(--line-soft);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 20px;
   border-radius: 999px;
-  background: var(--chip-bg);
-}
-
-.ctas {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.ctaPrimary {
-  display: inline-flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 22px;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  font-size: 14px;
+  text-decoration: none;
   font-weight: 500;
-  color: var(--accent-text);
-  background: var(--pg-flat);
-  box-shadow: inset 0 0 0 999px var(--accent-wash);
-  transition: border-color 220ms ease;
 }
 
-.ctaPrimary:hover {
-  border-color: var(--accent-hi);
+.btn:hover {
+  text-decoration: underline;
 }
 
-.ctaSecondary {
-  display: inline-flex;
-  align-items: center;
-  height: 44px;
-  padding: 0 22px;
-  border: 1px solid var(--line-soft);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
-  background: var(--pg-flat);
-  transition: border-color 220ms ease;
-}
-
-.ctaSecondary:hover {
-  border-color: var(--accent);
-}
-
-/* Mobile: the lower band stacks (role + tagline, then status, stack and
-   buttons); the readout keeps both labels but lets them wrap. */
-@media (max-width: 900px) {
-  .section {
-    min-height: auto;
-    padding: 12px 0 56px;
+@media (max-width: 860px) {
+  .band {
+    grid-template-columns: minmax(0, 1fr);
   }
-
-  .readout {
-    flex-wrap: wrap;
-    margin-bottom: 36px;
+  .main {
+    grid-column: 1;
   }
-
-  .lower {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    margin-top: 28px;
-  }
-
-  .availability {
-    margin-bottom: 20px;
+  .facts {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
-@media (max-width: 560px) {
-  .spriteTile {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-  }
-
-  .sprite {
-    width: 56px;
-    height: 56px;
-  }
-
-  /* Narrow phones: detail drops to its own line under the label, the
-     divider goes away so nothing dangles at a line end. */
-  .availSep {
-    display: none;
-  }
-
-  .availDetail {
-    flex-basis: 100%;
-    padding-left: 19px;
-    order: 3;
-  }
-
-  .availability {
-    display: flex;
-    flex-wrap: wrap;
-    white-space: normal;
-  }
-
-  .availGo {
-    margin-left: auto;
+@media (max-width: 480px) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

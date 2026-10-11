@@ -1,44 +1,8 @@
-/* GitHub contribution graph — flat fills only; cell colours come from the
-   derived --ramp-* tokens so it repaints with the active Pokémon. */
+/* GitHub contribution graph. Flat fills only; cells use the gray --ramp-*
+   tokens from globals.css, so they follow light and dark mode. */
 
 .graphCard {
   position: relative;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 18px 20px 14px;
-}
-
-.graphHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.graphCount {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.graphCountNum {
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--ink-strong);
-  letter-spacing: -0.01em;
-}
-
-.graphCountLabel {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--kicker);
-}
-
-.graphSpan {
-  font-size: 11px;
-  color: var(--faint);
 }
 
 .graphBody {
@@ -57,8 +21,8 @@
   row-gap: 3px;
   align-items: center;
   padding-top: 16px;
-  font-size: 9px;
-  color: var(--faint);
+  font-size: 10px;
+  color: var(--mid);
   line-height: 1;
 }
 
@@ -80,8 +44,8 @@
   display: flex;
   gap: 3px;
   margin-bottom: 6px;
-  font-size: 9px;
-  color: var(--faint);
+  font-size: 10px;
+  color: var(--mid);
   height: 10px;
 }
 
@@ -106,29 +70,35 @@
 .graphCell {
   aspect-ratio: 1;
   border-radius: 2px;
+  transition: transform 0.45s var(--ease);
+}
+
+/* Before the graph scrolls into view, cells wait at zero size; each one's
+   inline transition-delay staggers the fill left to right. */
+.graphCard[data-waiting] .graphCell {
+  transform: scale(0);
 }
 
 /* Hovered / keyboard-selected day: a crisp ink ring, like GitHub's. */
 .graphCell[data-active] {
-  outline: 1px solid var(--ink-strong);
+  outline: 1px solid var(--ink);
   outline-offset: 1px;
 }
 
 .graphWeeks:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--ink);
   outline-offset: 5px;
   border-radius: 3px;
 }
 
-/* Day tooltip — inverted ink-on-page so it tracks every palette in both
-   modes (ink-strong/pg-flat are the pair the contrast math already fits). */
+/* Day tooltip: inverted, paper text on an ink chip, in both modes. */
 .graphTip {
   position: absolute;
   z-index: 2;
   padding: 6px 9px;
   border-radius: 6px;
-  background: var(--ink-strong);
-  color: var(--pg-flat);
+  background: var(--ink);
+  color: var(--paper);
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
@@ -152,7 +122,7 @@
   top: 100%;
   left: calc(50% + var(--arrow-x, 0px));
   border: 5px solid transparent;
-  border-top-color: var(--ink-strong);
+  border-top-color: var(--ink);
   transform: translateX(-50%);
 }
 
@@ -179,8 +149,8 @@
   justify-content: flex-end;
   gap: 5px;
   margin-top: 12px;
-  font-size: 10px;
-  color: var(--faint);
+  font-size: 0.85rem;
+  color: var(--mid);
 }
 
 .graphLegend span:first-child {

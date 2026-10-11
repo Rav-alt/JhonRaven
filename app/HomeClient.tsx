@@ -1,51 +1,64 @@
 "use client";
 
 import styles from "./page.module.css";
-import { useTheme } from "@/hooks/useTheme";
-import { useScrollSpy } from "@/hooks/useScrollSpy";
-import SideNav from "@/components/SideNav";
-import Header from "@/components/Header";
+import { useScrollMotion } from "@/hooks/useScrollMotion";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import TechStack from "@/components/TechStack";
-import Projects from "@/components/Projects";
+import Sidebar from "@/components/Sidebar";
+import ProjectSection from "@/components/Projects";
 import Experience from "@/components/Experience";
+import Stack from "@/components/Stack";
+import ContributionGraphCard from "@/components/ContributionGraph";
 import Contact from "@/components/Contact";
+import { NAME, PROJECTS } from "@/lib/data";
 import type { ContributionGraph } from "@/lib/github";
 
-const NAME = "Jhon Raven Cadiz";
-const HANDLE = "@rav-alt";
-const TAGLINE =
-  "I build fast, careful interfaces for the web — and the systems that keep them consistent.";
+const WORK = PROJECTS.filter((p) => p.group === "work");
+const PERSONAL = PROJECTS.filter((p) => p.group === "personal");
 
 export default function HomeClient({ graph }: { graph: ContributionGraph }) {
-  const { theme, toggleTheme, poke, setPoke } = useTheme();
-  const { sideOn, activeSec } = useScrollSpy();
+  useScrollMotion();
 
   return (
-    <div className={styles.root}>
+    <>
       <a className="skipLink" href="#main">
         Skip to content
       </a>
-      <SideNav sideOn={sideOn} activeSec={activeSec} />
+      <Hero name={NAME} />
 
-      <div className={styles.container}>
-        <Header
-          name={NAME}
-          theme={theme}
-          toggleTheme={toggleTheme}
-          poke={poke}
-          setPoke={setPoke}
-        />
-        <main id="main">
-          <Hero name={NAME} tagline={TAGLINE} theme={theme} poke={poke} />
-          <About name={NAME} handle={HANDLE} graph={graph} />
-          <TechStack />
-          <Projects />
+      <div className={`${styles.layout} wrap`} data-dock-layout>
+        <Sidebar name={NAME} />
+        <main id="main" className={styles.main}>
+          <ProjectSection
+            id="work"
+            title="Work"
+            note="Shipped for an employer"
+            projects={WORK}
+          />
+          <ProjectSection
+            id="personal"
+            title="Personal projects"
+            note="Designed and built on my own"
+            projects={PERSONAL}
+          />
           <Experience />
-          <Contact name={NAME} theme={theme} />
+          <Stack />
+          <section id="activity" aria-labelledby="activity-title">
+            <div className="secHead">
+              <h2 id="activity-title">Activity</h2>
+              <p>
+                {graph.total.toLocaleString("en-US")} GitHub contributions in the last {graph.weeks.length} weeks
+              </p>
+            </div>
+            <ContributionGraphCard graph={graph} />
+          </section>
+          <Contact />
         </main>
       </div>
-    </div>
+
+      <footer className={`${styles.footer} wrap`}>
+        <span>© 2026 {NAME}</span>
+        <span>Manila, Philippines</span>
+      </footer>
+    </>
   );
 }

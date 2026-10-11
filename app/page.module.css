@@ -1,22 +1,40 @@
-.root {
-  min-height: 100vh;
-  background: var(--pg-flat);
-  color: var(--ink);
-  overflow-x: hidden;
-  position: relative;
-  transition: background 400ms ease, color 400ms ease;
+/* Two columns from here down: the sticky profile on the left, the work on
+   the right. Under 860px the profile becomes a top bar (Sidebar.module.css). */
+.layout {
+  display: grid;
+  grid-template-columns: var(--side) minmax(0, 1fr);
+  column-gap: var(--colgap);
+  align-items: start;
+  padding-bottom: 64px;
 }
 
-.container {
-  position: relative;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 clamp(24px, 5vw, 64px);
+.main {
+  display: grid;
+  gap: clamp(96px, 12vw, 168px);
+  min-width: 0;
 }
 
-/* Leave room at the bottom for the floating section rail on mobile. */
-@media (max-width: 900px) {
-  .container {
-    padding-bottom: 96px;
+.main > section {
+  min-width: 0;
+  scroll-margin-top: 40px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding-block: 28px;
+  color: var(--mid);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .main > section {
+    scroll-margin-top: 100px;
   }
 }

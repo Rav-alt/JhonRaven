@@ -183,3 +183,24 @@ button {
   }
 }
 
+/* Section heading row, shared by every section in <main>. */
+.secHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.secHead h2 {
+  font-size: clamp(2rem, 1.5rem + 2vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.secHead p {
+  color: var(--mid);
+  font-size: 0.95rem;
+}
+

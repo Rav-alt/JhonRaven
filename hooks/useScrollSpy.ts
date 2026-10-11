@@ -1,47 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { SIDE } from "@/lib/data";
+import { useEffect, useState } from "react";
 
-/** Drives the side icon-rail: whether it's visible (scrolled past the hero,
- * and only on wide viewports) and which section is currently "active". */
-export function useScrollSpy() {
-  const [sideOn, setSideOn] = useState(false);
-  const [activeSec, setActiveSec] = useState(SIDE[0].id);
-  const raf = useRef<number | null>(null);
-  const activeSecRef = useRef(activeSec);
+/** The id of the section currently in the reading band (35% to 40% down the
+ * viewport). Starts on the first id. */
+export function useScrollSpy(ids: readonly string[]) {
+  const [active, setActive] = useState(ids[0]);
 
   useEffect(() => {
-    const update = () => {
-      raf.current = null;
-      const on = window.scrollY > window.innerHeight * 0.6 && window.innerWidth >= 1440;
-      let active = activeSecRef.current;
-      for (const s of SIDE) {
-        const el = document.getElementById(s.id);
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) {
-          active = s.id;
-        }
-      }
-      setSideOn(on);
-      setActiveSec(active);
-      activeSecRef.current = active;
-    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+      },
+      { rootMargin: "-35% 0px -60% 0px" },
+    );
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    }
+    return () => io.disconnect();
+  }, [ids]);
 
-    const onScroll = () => {
-      if (raf.current) return;
-      raf.current = requestAnimationFrame(update);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    update();
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf.current) cancelAnimationFrame(raf.current);
-    };
-  }, []);
-
-  return { sideOn, activeSec };
+  return active;
 }

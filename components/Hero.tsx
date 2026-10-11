@@ -1,93 +1,54 @@
-"use client";
-
 import styles from "./Hero.module.css";
-import { AVAILABILITY, DEFAULT_POKE } from "@/lib/data";
-import type { PokeSkin, Theme } from "@/lib/data";
-import { tileSpriteFor } from "@/lib/pokeTheme";
+import { AVAILABILITY, LEDE, ROLES } from "@/lib/data";
 
-const STACK = ["TypeScript", "React", "Next.js", "Tailwind", "Motion"];
-
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/**
- * Hero — a "Pokédex readout" frame (mono labels in the corners, after
- * kaisermann.me), a small greeting with the active Pokémon's pixel sprite
- * (after jahir.dev), then the name set big across the width with the
- * details underneath (after jakubborowy.com). Text only sits on plain fill.
- */
-export default function Hero({
-  name,
-  tagline,
-  theme,
-  poke,
-}: {
-  name: string;
-  tagline: string;
-  theme: Theme;
-  poke: PokeSkin | null;
-}) {
-  const skin = poke ?? DEFAULT_POKE;
-  const types = skin.types.map(cap).join(" / ");
+/** The first screen: the name, set as large as the width allows, over a
+ * short introduction. useScrollMotion docks the name into the sidebar as the
+ * visitor scrolls; the empty slot keeps the hero's height while it does. */
+export default function Hero({ name }: { name: string }) {
+  // "Jhon Raven" / "Cadiz": the surname gets a line of its own.
+  const words = name.split(" ");
+  const lines = [words.slice(0, -1).join(" "), words[words.length - 1]];
+  const last = ROLES[0];
 
   return (
-    <section className={styles.section} aria-labelledby="hero-name">
-      <div className={styles.readout} aria-hidden="true">
-        <span>Portfolio · 2026</span>
-        <span>
-          No. {String(skin.dex).padStart(3, "0")} · {types}
-        </span>
-      </div>
-
-      <div className={styles.greeting}>
-        <span className={styles.spriteTile} title={`${skin.display} — change it in the Pokédex`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={tileSpriteFor(skin.dex, theme)} alt={`${skin.display}, pixel sprite`} className={styles.sprite} />
-        </span>
-        <span className={styles.greetText}>Kumusta! I&rsquo;m</span>
-      </div>
-
-      <h1 id="hero-name" className={styles.name}>
-        {name}
+    <header id="top" className={`${styles.hero} wrap`}>
+      <div data-dock-hero-slot aria-hidden="true" />
+      <h1 className={styles.name} data-dock-name>
+        {lines.map((l) => (
+          <span key={l} className={styles.line}>
+            <span data-line>{l}</span>
+          </span>
+        ))}
       </h1>
-
-      <div className={styles.lower}>
-        <div className={styles.lead}>
-          <div className={styles.role}>
-            <span className={styles.roleBar} />
-            <span className={styles.roleText}>Front End Developer</span>
-          </div>
-          <p className={styles.tagline}>{tagline}</p>
-        </div>
-
-        <div className={styles.side}>
-          {AVAILABILITY.open && (
-            <a href="#contact" className={styles.availability}>
-              <span className={styles.availDot} aria-hidden="true" />
-              <span className={styles.availLabel}>{AVAILABILITY.label}</span>
-              <span className={styles.availSep} aria-hidden="true" />
-              <span className={styles.availDetail}>{AVAILABILITY.detail}</span>
-              <span className={styles.availGo} aria-hidden="true">
-                →
-              </span>
+      <div className={styles.band} data-dock-band>
+        <div className={styles.main}>
+          <p className={styles.lede}>{LEDE}</p>
+          <dl className={styles.facts}>
+            <div>
+              <dt>Based in</dt>
+              <dd>Manila, Philippines (GMT+8)</dd>
+            </div>
+            <div>
+              <dt>Last role</dt>
+              <dd>
+                {last.title}, {last.company}
+              </dd>
+            </div>
+            {AVAILABILITY.open && (
+              <div>
+                <dt>Looking for</dt>
+                <dd>{AVAILABILITY.detail}</dd>
+              </div>
+            )}
+          </dl>
+          <div className={styles.actions}>
+            <a className={styles.btn} href="#work">
+              See my work
             </a>
-          )}
-          <div className={styles.chips}>
-            {STACK.map((t) => (
-              <span key={t} className={styles.chip}>
-                {t}
-              </span>
-            ))}
-          </div>
-          <div className={styles.ctas}>
-            <a href="#work" className={styles.ctaPrimary}>
-              Projects
-            </a>
-            <a href="#contact" className={styles.ctaSecondary}>
-              Get in touch
-            </a>
+            <a href="#contact">Get in touch</a>
           </div>
         </div>
       </div>
-    </section>
+    </header>
   );
 }

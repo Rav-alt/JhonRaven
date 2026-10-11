@@ -1,12 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./ContributionGraph.module.css";
 import type { ContributionDay, ContributionGraph } from "@/lib/github";
 
-// Jhon Raven's real GitHub activity (see lib/github.ts). Lives in the About
-// section as "Fig. 1"; moved out of the Hero so the Hero stays about the
-// person and the Pokémon.
+// Jhon Raven's real GitHub activity (see lib/github.ts), drawn in the gray
+// ramp. The first time it scrolls into view the weeks fill in left to right;
+// it renders complete on the server, so it is never blank without script.
 
 const LEGEND = [0, 1, 2, 3, 4];
 
@@ -45,6 +45,26 @@ export default function ContributionGraphCard({ graph }: { graph: ContributionGr
 
   const activeDay = active ? weeks[active.wi]?.[active.di] : undefined;
 
+  // Hide the cells only if the graph starts below the fold, then let them
+  // fill in once a third of it is visible.
+  const [waiting, setWaiting] = useState(false);
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (card.getBoundingClientRect().top < window.innerHeight) return;
+    setWaiting(true);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        setWaiting(false);
+        io.disconnect();
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(card);
+    return () => io.disconnect();
+  }, []);
+
   // Place the tip above the active cell, then clamp it inside the card so it
   // never spills off-screen at the grid's edges; the arrow stays on the cell.
   useLayoutEffect(() => {
@@ -81,14 +101,7 @@ export default function ContributionGraphCard({ graph }: { graph: ContributionGr
   };
 
   return (
-    <div ref={cardRef} className={styles.graphCard}>
-      <div className={styles.graphHeader}>
-        <div className={styles.graphCount}>
-          <span className={styles.graphCountNum}>{graph.total.toLocaleString("en-US")}</span>
-          <span className={styles.graphCountLabel}>contributions</span>
-        </div>
-        <div className={styles.graphSpan}>last {weeks.length} weeks</div>
-      </div>
+    <div ref={cardRef} className={styles.graphCard} data-waiting={waiting ? "" : undefined}>
       <div className={styles.graphBody}>
         <div className={styles.graphDays} aria-hidden="true">
           {DAY_LABELS.map((d, i) => (
@@ -119,7 +132,7 @@ export default function ContributionGraphCard({ graph }: { graph: ContributionGr
                     data-cell={`${wi}-${di}`}
                     data-active={active?.wi === wi && active?.di === di ? "" : undefined}
                     className={styles.graphCell}
-                    style={{ background: `var(--ramp-${day.level})` }}
+                    style={{ background: `var(--ramp-${day.level})`, transitionDelay: `${wi * 22 + di * 6}ms` }}
                     onMouseEnter={() => setActive({ wi, di })}
                   />
                 ))}

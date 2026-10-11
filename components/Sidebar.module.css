@@ -1,0 +1,168 @@
+.side {
+  position: sticky;
+  top: 40px;
+  display: grid;
+  gap: 22px;
+  padding-bottom: 24px;
+}
+
+.slotLink {
+  text-decoration: none;
+  justify-self: start;
+}
+
+.slotName {
+  display: block;
+  width: max-content;
+  font-family: var(--serif);
+  font-size: var(--slot-size);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+/* The flying hero name draws on top of this spot; hide the copy so the two
+   never double up mid-flight. */
+:global(.docking) .slotName {
+  visibility: hidden;
+}
+
+.role {
+  color: var(--mid);
+  line-height: 1.45;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex: none;
+}
+
+.nav {
+  display: grid;
+  gap: 2px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+/* The current section gets a short rule that grows in from the left. */
+.nav a::before {
+  content: "";
+  width: 0;
+  height: 1px;
+  background: var(--ink);
+  transition: width 0.35s var(--ease);
+}
+
+.nav a:hover,
+.nav a[aria-current="true"] {
+  color: var(--ink);
+}
+
+.nav a[aria-current="true"]::before {
+  width: 22px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.95rem;
+}
+
+.theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--mid);
+  justify-self: start;
+}
+
+.theme:hover {
+  color: var(--ink);
+}
+
+/* Half-filled circle: reads as "light / dark" without picking a side. */
+.themeIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  position: relative;
+  overflow: hidden;
+}
+
+.themeIcon::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 50%;
+  background: currentColor;
+}
+
+@media (max-width: 860px) {
+  .side {
+    top: env(safe-area-inset-top, 0px);
+    z-index: 30;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    margin-inline: calc(var(--gutter) * -1);
+    margin-bottom: 48px;
+    padding: 12px var(--gutter) 0;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px 16px;
+    align-items: center;
+  }
+  .role,
+  .status,
+  .links {
+    display: none;
+  }
+  .theme {
+    grid-column: 3;
+    grid-row: 1;
+    padding: 6px;
+  }
+  .themeLabel {
+    display: none;
+  }
+  .nav {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    border-top: 0;
+    padding: 2px 0 10px;
+    scrollbar-width: none;
+  }
+  .nav a {
+    white-space: nowrap;
+    font-size: 0.92rem;
+    padding: 4px 0;
+  }
+  .nav a::before {
+    display: none;
+  }
+  .nav a[aria-current="true"] {
+    text-decoration: underline;
+    text-underline-offset: 0.35em;
+  }
+}

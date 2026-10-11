@@ -1,6 +1,6 @@
 import { contributionGrid } from "@/lib/data";
 
-// Real GitHub contribution calendar for the Hero graph.
+// Real GitHub contribution calendar for the Activity section.
 //
 // The green grid is only exposed through GitHub's GraphQL API, which needs a
 // token — a classic PAT with no scopes works, but only sees PUBLIC

@@ -1,212 +1,185 @@
 @import "tailwindcss";
 
-/* Fonts load via next/font in app/layout.tsx, which puts --font-display
-   (Space Grotesk) and --font-body (Inter) on <html> — each value already
-   carries next/font's own fallback face. We add system-ui as a final guard
-   where the variables are consumed (body + headings below). */
+/* Design tokens. Black, white and gray only: no hue anywhere, no gradients,
+   glows, blurs or soft shadows. Light values sit on bare :root; dark values
+   apply when the visitor's OS asks for dark (and they haven't picked light),
+   or when they pick dark with the toggle. Fonts come from next/font in
+   app/layout.tsx as --font-serif and --font-sans. */
+:root {
+  --paper: #ffffff;
+  --ink: #000000;
+  --mid: #5c5c5c;
+  --line: #e2e2e2;
+  --wash: #f2f2f2;
+  /* Contribution graph ramp, lightest to darkest activity. */
+  --ramp-0: #ececec;
+  --ramp-1: #c2c2c2;
+  --ramp-2: #8a8a8a;
+  --ramp-3: #454545;
+  --ramp-4: #000000;
+  --scrim: #000000b3;
 
-/* Dialga theme tokens — dark ("Shiny") is the default; light ("Regular")
-   overrides every token so the whole page recolors when data-theme flips.
-   Every colour is flat: no gradients, glows, blurs or soft shadows. Light
-   mode surfaces are plain #ffffff. --pg / --halo / --glow are kept only so
-   older cached palettes and the engine's key set stay valid. */
-:root,
+  --serif: var(--font-serif), Georgia, "Times New Roman", serif;
+  --sans: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --side: 248px;
+  --colgap: clamp(32px, 5vw, 80px);
+  --name-size: clamp(3.2rem, 13.4vw, 12.5rem);
+  --slot-size: 2.55rem;
+  --radius: 14px;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #000000;
+    --ink: #f3f3f3;
+    --mid: #a6a6a6;
+    --line: #2b2b2b;
+    --wash: #121212;
+    --ramp-0: #1b1b1b;
+    --ramp-1: #3c3c3c;
+    --ramp-2: #6e6e6e;
+    --ramp-3: #adadad;
+    --ramp-4: #f3f3f3;
+    --scrim: #000000cc;
+    color-scheme: dark;
+  }
+}
+
 :root[data-theme="dark"] {
-  --pg: #0e1a2e;
-  --pg-flat: #0e1a2e;
-  --ink: #e3ecf7;
-  --ink-strong: #f0f6ff;
-  --muted: #a7bed9;
-  --faint: #7f97b6;
-  --kicker: #7fb2e8;
-  --accent: #6fb6ff;
-  --accent-hi: #c6e4ff;
-  --accent-text: #cfe6ff;
-  --accent-wash: #6fb6ff14;
-  --line: #22405f;
-  --line-soft: #2c4a6e;
-  --card: #142843;
-  --card-shadow: none;
-  --tile: #12233c;
-  --chip-bg: #12233c;
-  --grid-ink: #ffffff0a;
-  --gem-hi: #bfe0ff;
-  --gem-lo: #3f7fd1;
-  --glow: #3f7fd166;
-  --scrim-a: #0b1626f2;
-  --scrim-b: #0b1626d9;
-  --scrim-c: #0b162600;
-  --halo: none;
-  --fig-op: 0.9;
-  --icon-ink: #cfe6ff;
-  --ramp-0: #152a44;
-  --ramp-1: #1e4a78;
-  --ramp-2: #2f74b8;
-  --ramp-3: #59a6ee;
-  --ramp-4: #a8d6ff;
-  --sweep: #1d3f66;
-  --on-sweep: #f2f8ff;
-  /* Navbar pill — neutral near-black in both modes, never derived. */
-  --bar-bg: #04070d;
-  --bar-line: #1f2a3a;
-  --bar-ink: #f4f7fb;
-  --bar-muted: #a9b4c3;
-  --bar-hover: #141c28;
-  --bar-btn: #f4f7fb;
-  --bar-btn-ink: #04070d;
-  --bar-btn-hover: #d9e0ea;
-  --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/483.png");
+  --paper: #000000;
+  --ink: #f3f3f3;
+  --mid: #a6a6a6;
+  --line: #2b2b2b;
+  --wash: #121212;
+  --ramp-0: #1b1b1b;
+  --ramp-1: #3c3c3c;
+  --ramp-2: #6e6e6e;
+  --ramp-3: #adadad;
+  --ramp-4: #f3f3f3;
+  --scrim: #000000cc;
+  color-scheme: dark;
 }
 
-:root[data-theme="light"] {
-  --pg: #ffffff;
-  --pg-flat: #ffffff;
-  --ink: #1d3150;
-  --ink-strong: #0f1e33;
-  --muted: #4c6685;
-  --faint: #6f88a4;
-  --kicker: #2f6fae;
-  --accent: #2f74b8;
-  --accent-hi: #1d5896;
-  --accent-text: #1f5da8;
-  --accent-wash: #2f74b810;
-  --line: #d3e0ee;
-  --line-soft: #dbe6f2;
-  --card: #ffffff;
-  --card-shadow: none;
-  --tile: #ffffff;
-  --chip-bg: #ffffff;
-  --grid-ink: #1b3a5c0d;
-  --gem-hi: #7fb6e8;
-  --gem-lo: #2f74b8;
-  --glow: #7fb6e855;
-  --scrim-a: #ffffffe6;
-  --scrim-b: #ffffffb3;
-  --scrim-c: #ffffff00;
-  --fig-op: 1;
-  --halo: none;
-  --icon-ink: #1f5da8;
-  --ramp-0: #e6edf6;
-  --ramp-1: #c2dbf3;
-  --ramp-2: #7fb6e8;
-  --ramp-3: #3f8ad4;
-  --ramp-4: #1d5896;
-  --sweep: #1d5896;
-  --on-sweep: #f2f8ff;
-  --bar-bg: #0b0f17;
-  --bar-line: #0b0f17;
-  --bar-ink: #ffffff;
-  --bar-muted: #b4bcc8;
-  --bar-hover: #1b2230;
-  --bar-btn: #ffffff;
-  --bar-btn-ink: #0b0f17;
-  --bar-btn-hover: #e4e8ee;
-  --sprite: url("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/483.png");
+@media (max-width: 860px) {
+  :root {
+    --slot-size: 1.15rem;
+  }
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
 body {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--pg-flat);
+  background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-body), system-ui, sans-serif;
+  font: 400 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
 h2,
-h3,
-h4 {
-  font-family: var(--font-display), system-ui, sans-serif;
+h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
 }
 
 a {
-  color: var(--accent);
-  text-decoration: none;
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 a:hover {
-  color: var(--accent-hi);
+  text-decoration-thickness: 2px;
 }
 
 button {
   font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
-/* Visible, styled focus for keyboard users on every interactive element.
-   Mouse clicks don't trigger :focus-visible, so this never shows on hover. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
-/* Skip link — first focusable element; slides into view when tabbed to. */
+.wrap {
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Skip link: the first focusable element, shown only when tabbed to. */
 .skipLink {
   position: fixed;
   top: 10px;
   left: 10px;
   z-index: 100;
   padding: 10px 16px;
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-strong);
-  background: var(--tile);
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 999px;
+  font-weight: 500;
+  text-decoration: none;
   transform: translateY(-160%);
   transition: transform 200ms ease;
 }
 
 .skipLink:focus-visible {
-  transform: translateY(0);
+  transform: none;
 }
 
-/* Motion is an enhancement — respect the OS "reduce motion" setting. */
+/* Every effect on this site is an enhancement. With reduced motion on, the
+   page is the same content standing still. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
-@keyframes noct-drift {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes noct-rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
-}
-
-@keyframes noct-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.75); }
-}
-
-@keyframes noct-float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes noct-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}

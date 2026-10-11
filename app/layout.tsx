@@ -1,71 +1,45 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Young_Serif, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
-// Display + body pairing. Space Grotesk carries the headings (a precise,
-// slightly technical sci-fi voice that suits the steel/Dialga theme); Inter
-// stays on body copy. Exposed as CSS variables and consumed in globals.css.
-const display = Space_Grotesk({
+// Young Serif sets the name and headings; Hanken Grotesk carries everything
+// else. Exposed as CSS variables and consumed through --serif / --sans in
+// globals.css.
+const serif = Young_Serif({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-display",
+  weight: "400",
+  variable: "--font-serif",
   display: "swap",
 });
 
-const body = Inter({
+const sans = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-// Mono face for spec-sheet metadata only (Hero spec rows, figure labels).
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
+  weight: ["400", "500", "600"],
+  variable: "--font-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Jhon Raven Cadiz — Front End Developer",
+  title: "Jhon Raven Cadiz, front-end developer",
   description:
-    "Portfolio of Jhon Raven Cadiz, a front end developer based in Manila, Philippines.",
+    "Portfolio of Jhon Raven Cadiz, a front-end developer in Manila, Philippines.",
 };
 
-// Runs before first paint: set the light/dark mode, then replay the last
-// picked Pokémon's derived palette (persisted whole, so no maths or fetch
-// here) as inline custom properties on <html>. Keep the storage keys and the
-// cache shape in sync with hooks/useTheme.ts.
+// Runs before first paint. With no saved choice the page follows the OS
+// (no data-theme attribute); a saved choice pins light or dark. Keep the
+// storage key in sync with hooks/useTheme.ts.
 const THEME_INIT = `
 (function () {
   try {
-    var el = document.documentElement;
-    var saved = localStorage.getItem("dialga-portfolio-theme");
-    var theme = saved === "light" || saved === "dark" ? saved : "dark";
-    el.setAttribute("data-theme", theme);
-    var raw = localStorage.getItem("dialga-portfolio-poke");
-    if (raw) {
-      var cache = JSON.parse(raw) || {};
-      // Only replay caches from the current engine (CACHE_VERSION in
-      // lib/pokeTheme.ts); older ones are rebuilt by useTheme after hydration.
-      var vars = cache.v === 2 ? cache[theme] : null;
-      if (vars) for (var k in vars) el.style.setProperty(k, vars[k]);
-    }
-  } catch (e) {
-    document.documentElement.setAttribute("data-theme", "dark");
-  }
+    var saved = localStorage.getItem("jr-theme");
+    if (saved === "light" || saved === "dark") document.documentElement.setAttribute("data-theme", saved);
+  } catch (e) {}
 })();
 `;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      data-theme="dark"
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${serif.variable} ${sans.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>

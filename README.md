@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## GitHub contribution graph
 
-The Hero's contribution graph reads the real GitHub contribution calendar via
+The Activity section's contribution graph reads the real GitHub contribution calendar via
 the GraphQL API ([lib/github.ts](lib/github.ts)), fetched in the
 [app/page.tsx](app/page.tsx) Server Component and revalidated hourly. Without a
 token it falls back to a seeded placeholder grid.

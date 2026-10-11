@@ -11,7 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # Design
 
 Before any UI, styling, layout, or visual work, read **`DESIGN.md`** in the repo
-root and follow it. It defines the non-negotiable design rules for this
-portfolio — including that hue is derived at runtime from the Pokémon color
-engine (never hardcode color), the accessibility floor, and the
-definition-of-done checklist to run on every section.
+root and follow it. It defines the rules for this portfolio: black, white and
+gray tokens only (no hue, flat fills), Young Serif with Hanken Grotesk, the
+name-docking layout, where scroll motion lives, the accessibility floor, and
+the definition-of-done checklist.

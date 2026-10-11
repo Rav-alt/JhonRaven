@@ -1,24 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Projects.module.css";
-import { PROJECTS, type Project, type ProjectClip } from "@/lib/data";
+import type { Project, ProjectClip } from "@/lib/data";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-function StatusBadge({ project, className }: { project: Project; className?: string }) {
-  return (
-    <span className={[styles.badge, project.ended ? styles.badgeEnded : "", className ?? ""].join(" ")}>
-      {!project.ended && <span className={styles.badgeDot} />}
-      {project.status}
-    </span>
-  );
+const GROW = "cubic-bezier(.2,.75,.1,1)";
+
+/** What the frame's button says it will show. */
+function openLabel(p: Project) {
+  if (p.media.kind === "image") return "View screenshot";
+  const { clips } = p.media;
+  return clips.length > 1 ? `Watch ${clips.length} clips` : `Watch ${clips[0].label.toLowerCase()}`;
 }
 
-/** Demo loops. Autoplays muted (required by iOS/Chrome), but never for
+/** Transform that maps `to` back onto `from`, for growing the modal out of
+ * the frame that opened it (and shrinking it back on close). */
+function flip(from: DOMRect, to: DOMRect) {
+  return `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`;
+}
+
+const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Demo loops. Autoplays muted (required by iOS and Chrome), but never for
  * visitors who ask for reduced motion, and always has a visible pause control
  * since the loops run longer than five seconds (WCAG 2.2.2). Clips with a
- * soundtrack get a speaker button; sound only ever starts on a visitor's tap. */
+ * soundtrack get a sound button; sound only ever starts on a visitor's tap. */
 function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -26,12 +34,10 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const clip = clips[index];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    // play() rejects if the browser still blocks it; the poster + Play button remain.
+    if (!video || reduced()) return;
+    // play() rejects if the browser still blocks it; the poster and Play button remain.
     video.play().catch(() => setPlaying(false));
   }, [index]);
 
@@ -47,19 +53,18 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
     if (!video) return;
     video.muted = !video.muted;
     setMuted(video.muted);
-    // Turning sound on is a deliberate request to hear it, so start playback too.
+    // Turning sound on is a request to hear it, so start playback too.
     if (!video.muted && video.paused) video.play().catch(() => setPlaying(false));
   };
 
   const pick = (i: number) => {
     setIndex(i);
-    // The next clip mounts a fresh, muted <video>; keep the button in step.
-    setMuted(true);
+    setMuted(true); // the next clip mounts a fresh, muted <video>
   };
 
   return (
-    <div className={styles.player}>
-      <div className={styles.playerFrame}>
+    <>
+      <div className={styles.stage}>
         <video
           key={clip.src}
           ref={videoRef}
@@ -78,163 +83,216 @@ function ClipPlayer({ clips, title }: { clips: ProjectClip[]; title: string }) {
           Your browser can&apos;t play this video.
         </video>
       </div>
-
-      <div className={styles.playerBar}>
-        <div className={styles.playerControls}>
-          <button type="button" className={styles.playBtn} onClick={toggle} aria-label={playing ? "Pause demo" : "Play demo"}>
-            {playing ? (
-              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z" /></svg>
-            ) : (
-              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" /></svg>
-            )}
+      <div className={styles.controls}>
+        <button type="button" className={styles.pill} onClick={toggle}>
+          {playing ? "Pause" : "Play"}
+        </button>
+        {clip.audio && (
+          <button type="button" className={styles.pill} onClick={toggleSound} aria-pressed={!muted}>
+            {muted ? "Turn sound on" : "Turn sound off"}
           </button>
-          {clip.audio && (
-            <button
-              type="button"
-              className={[styles.playBtn, styles.soundBtn].join(" ")}
-              onClick={toggleSound}
-              aria-label={muted ? "Turn sound on" : "Turn sound off"}
-              aria-pressed={!muted}
-            >
-              <svg viewBox="0 0 14 12" aria-hidden="true">
-                <path d="M1 4.25h2.5L7 1.25v9.5l-3.5-3H1z" />
-                {muted ? (
-                  <path className={styles.soundStroke} d="M9.5 4l3.5 4M13 4l-3.5 4" />
-                ) : (
-                  <path className={styles.soundStroke} d="M9.25 3.75a3 3 0 0 1 0 4.5M11 2a5.5 5.5 0 0 1 0 8" />
-                )}
-              </svg>
-            </button>
-          )}
-        </div>
-
-        <div className={styles.clipTabs} role="group" aria-label="Demo clips">
-          {clips.map((c, i) => (
-            <button
-              key={c.src}
-              type="button"
-              className={styles.clipTab}
-              aria-pressed={i === index}
-              onClick={() => pick(i)}
-            >
-              <span className={styles.clipNum}>{String(i + 1).padStart(2, "0")}</span>
-              {c.label}
-            </button>
-          ))}
-        </div>
-
-        <p className={styles.clipCaption}>{clip.caption}</p>
+        )}
+        {clips.length > 1 && (
+          <div className={styles.clipTabs} role="group" aria-label="Clips">
+            {clips.map((c, i) => (
+              <button key={c.src} type="button" className={styles.pill} aria-pressed={i === index} onClick={() => pick(i)}>
+                {c.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+      <p className={styles.caption}>{clip.caption}</p>
+    </>
   );
 }
 
-export default function Projects() {
+function ProjectEntry({ project, onOpen }: { project: Project; onOpen: (el: HTMLElement) => void }) {
+  const p = project;
+  return (
+    <article className={styles.entry}>
+      <div className={styles.entryHead}>
+        <div>
+          <h3>{p.name}</h3>
+          <p>{p.owner}</p>
+        </div>
+        <span>{p.status}</span>
+      </div>
+      <button
+        type="button"
+        className={styles.frame}
+        data-frame
+        onClick={(e) => onOpen(e.currentTarget)}
+        aria-label={`${openLabel(p)}: ${p.name}`}
+      >
+        <span className={styles.screen} data-frame-screen>
+          <Image
+            src={p.thumb.src}
+            alt=""
+            fill
+            sizes="(min-width: 1360px) 900px, (min-width: 860px) 66vw, 92vw"
+            className={p.thumb.fit === "contain" ? styles.contain : styles.cover}
+          />
+        </span>
+        <span className={styles.open}>{openLabel(p)}</span>
+      </button>
+      <div className={styles.entryBody}>
+        <p>{p.description[0]}</p>
+        <dl>
+          <div>
+            <dt>Built with</dt>
+            <dd>{p.stack.join(", ")}</dd>
+          </div>
+          <div>
+            <dt>{p.href ? "Live at" : "Role"}</dt>
+            <dd>
+              {p.href ? (
+                <a href={p.href} target="_blank" rel="noopener noreferrer">
+                  {p.chrome}
+                  <span className="srOnly"> (opens in a new tab)</span>
+                </a>
+              ) : (
+                p.role
+              )}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+  );
+}
+
+/** One titled list of projects (Work, or Personal projects) and the modal
+ * its frames open. */
+export default function ProjectSection({
+  id,
+  title,
+  note,
+  projects,
+}: {
+  id: string;
+  title: string;
+  note: string;
+  projects: Project[];
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
-  const project = PROJECTS.find((p) => p.id === openId) ?? null;
+  const [closing, setClosing] = useState(false);
+  const originRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const project = projects.find((p) => p.id === openId) ?? null;
+
+  // Grow the modal out of the frame that was clicked.
+  useLayoutEffect(() => {
+    const el = contentRef.current;
+    const from = originRef.current;
+    if (!openId || !el || !from || reduced()) return;
+    el.animate(
+      [
+        { transform: flip(from.getBoundingClientRect(), el.getBoundingClientRect()), opacity: 0.4 },
+        { transform: "none", opacity: 1 },
+      ],
+      { duration: 460, easing: GROW },
+    );
+  }, [openId]);
+
+  const open = (p: Project, el: HTMLElement) => {
+    originRef.current = el;
+    setClosing(false);
+    setOpenId(p.id);
+  };
+
+  // Shrink back into the frame, then unmount. Escape, the backdrop and the
+  // close button all come through here.
+  const close = () => {
+    const el = contentRef.current;
+    const to = originRef.current;
+    if (closing) return;
+    if (!el || !to || reduced()) {
+      setOpenId(null);
+      return;
+    }
+    setClosing(true);
+    const anim = el.animate(
+      [
+        { transform: "none", opacity: 1 },
+        { transform: flip(to.getBoundingClientRect(), el.getBoundingClientRect()), opacity: 0 },
+      ],
+      { duration: 320, easing: "cubic-bezier(.4,0,.6,1)", fill: "forwards" },
+    );
+    anim.onfinish = () => {
+      setOpenId(null);
+      setClosing(false);
+    };
+  };
 
   return (
-    <section id="work" className={styles.section}>
-      <div className={styles.sectionHead}>
-        <h2 className={styles.kicker}>Projects</h2>
-        <div className={styles.rule} />
-        <span className={styles.tail}>Shipped &amp; self-built</span>
+    <section id={id} className={styles.section} aria-labelledby={`${id}-title`}>
+      <div className="secHead">
+        <h2 id={`${id}-title`}>{title}</h2>
+        <p>{note}</p>
       </div>
-
-      <div className={styles.grid}>
-        {PROJECTS.map((p) => (
-          <button key={p.id} className={styles.tile} onClick={() => setOpenId(p.id)}>
-            <span className={styles.thumb}>
-              <Image src={p.thumb.src} alt={p.thumb.alt} fill sizes="280px" />
-              <span className={styles.thumbScrim} />
-              <StatusBadge project={p} className={styles.thumbBadge} />
-              {p.media.kind === "video" && <span className={styles.thumbVideo}>Video</span>}
-            </span>
-            <span className={styles.tileBody}>
-              <span className={styles.tileNames}>
-                <span className={styles.tileName}>{p.name}</span>
-                <span className={styles.tileCompany}>{p.owner}</span>
-              </span>
-              <span className={styles.tileOpen}>Open →</span>
-            </span>
-          </button>
+      <div className={styles.list}>
+        {projects.map((p) => (
+          <ProjectEntry key={p.id} project={p} onOpen={(el) => open(p, el)} />
         ))}
       </div>
 
-      <Dialog open={project !== null} onOpenChange={(o) => !o && setOpenId(null)}>
+      <Dialog open={project !== null} onOpenChange={(o) => !o && close()}>
         {project && (
           <DialogContent
+            ref={contentRef}
             showCloseButton={false}
-            overlayClassName={styles.backdrop}
+            overlayClassName={`${styles.backdrop} ${closing ? styles.backdropOut : ""}`}
             className={styles.modal}
             aria-describedby={undefined}
           >
-            <figure style={{ margin: 0 }}>
-              <div className={styles.modalBar}>
-                <div className={styles.modalDots}>
-                  <span className={styles.modalDot} />
-                  <span className={styles.modalDot} />
-                  <span className={styles.modalDot} />
-                </div>
+            <div className={styles.bar}>
+              <span className={styles.chrome}>
                 {project.href ? (
-                  <a
-                    className={[styles.modalUrl, styles.modalUrlLink].join(" ")}
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={project.href} target="_blank" rel="noopener noreferrer">
                     {project.chrome}
                     <span aria-hidden="true"> ↗</span>
-                    <span className={styles.srOnly}> (opens in a new tab)</span>
+                    <span className="srOnly"> (opens in a new tab)</span>
                   </a>
                 ) : (
-                  <span className={styles.modalUrl}>{project.chrome}</span>
+                  project.chrome
                 )}
-                <button className={styles.closeBtn} onClick={() => setOpenId(null)} aria-label="Close">
-                  ×
-                </button>
+              </span>
+              <button type="button" className={styles.close} onClick={close} aria-label="Close">
+                ×
+              </button>
+            </div>
+
+            {project.media.kind === "video" ? (
+              <ClipPlayer clips={project.media.clips} title={project.name} />
+            ) : (
+              <div className={styles.stage}>
+                <Image src={project.media.src} alt={project.media.alt} fill sizes="1000px" className={styles.contain} />
               </div>
-              {project.media.kind === "video" ? (
-                <ClipPlayer clips={project.media.clips} title={project.name} />
-              ) : (
-                <div className={styles.modalShot}>
-                  <Image src={project.media.src} alt={project.media.alt} fill sizes="1020px" />
-                  <div className={styles.modalShotScrim} />
-                </div>
-              )}
-            </figure>
+            )}
 
             <div className={styles.modalBody}>
               <div className={styles.modalMain}>
-                <div className={styles.modalTags}>
-                  <StatusBadge project={project} />
-                  <span className={styles.modalRole}>{project.role}</span>
-                </div>
-                <div className={styles.modalTitleRow}>
-                  <DialogTitle className={styles.modalTitle}>{project.name}</DialogTitle>
-                  <div className={styles.modalCompany}>{project.owner}</div>
-                </div>
+                <DialogTitle className={styles.modalTitle}>{project.name}</DialogTitle>
+                <p className={styles.modalMeta}>
+                  {project.owner}. {project.role}.
+                </p>
                 {project.description.map((para) => (
-                  <p key={para.slice(0, 24)} className={styles.modalDesc}>
-                    {para}
-                  </p>
+                  <p key={para.slice(0, 24)}>{para}</p>
                 ))}
-                <div className={styles.modalChips}>
-                  {project.stack.map((t) => (
-                    <span key={t} className={styles.chip}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
               </div>
-              <div className={styles.facts}>
+              <dl className={styles.facts}>
                 {project.facts.map((f) => (
-                  <div key={f.k} className={styles.fact}>
-                    <span className={styles.factLabel}>{f.k}</span>
-                    <span className={styles.factValue}>{f.v}</span>
+                  <div key={f.k}>
+                    <dt>{f.k}</dt>
+                    <dd>{f.v}</dd>
                   </div>
                 ))}
-              </div>
+                <div>
+                  <dt>Built with</dt>
+                  <dd>{project.stack.join(", ")}</dd>
+                </div>
+              </dl>
             </div>
           </DialogContent>
         )}

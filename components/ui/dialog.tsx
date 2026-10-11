@@ -5,8 +5,9 @@
  * trap, ARIA roles, scroll lock, Escape/outside-click close). Color,
  * border, shadow and shape are supplied by the consumer's className —
  * this portfolio skins every dialog itself, so the usual bg-background /
- * text-foreground defaults are left out rather than standing up the full
- * shadcn token theme for one component.
+ * text-foreground defaults are left out. Placement is the consumer's too:
+ * no centering transform here, so the consumer can animate `transform`
+ * (the project modal grows out of the frame that opened it).
  */
 
 import * as React from "react";
@@ -56,7 +57,7 @@ function DialogContent({
       <DialogOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         data-slot="dialog-content"
-        className={cn("fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 outline-none", className)}
+        className={cn("fixed z-50 outline-none", className)}
         {...props}
       >
         {children}

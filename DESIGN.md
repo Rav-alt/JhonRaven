@@ -27,7 +27,11 @@ so it can land.
   site follows the OS. Never hardcode a color in a component.
 - Tokens: `--paper` (background), `--ink` (text, rules, buttons), `--mid`
   (secondary text), `--line` (hairlines), `--wash` (frame and stage fills),
-  `--ramp-0`…`--ramp-4` (graph), `--scrim` (modal backdrop).
+  `--ramp-0`…`--ramp-4` (graph), `--scrim` (modal backdrop), `--thumb`
+  (scrollbar thumb).
+- Scrollbars are a slim pill with no arrows or track: `--thumb` at rest,
+  `--mid` on hover, `--ink` while dragged. Firefox gets the thin bar and
+  colors only.
 
 ## Typography
 - **Young Serif** for the name, section headings and project titles.

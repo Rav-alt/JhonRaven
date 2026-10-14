@@ -153,6 +153,9 @@
     padding: 2px 0 10px;
     scrollbar-width: none;
   }
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
   .nav a {
     white-space: nowrap;
     font-size: 0.92rem;
